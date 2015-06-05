@@ -17,8 +17,10 @@ end
 - [ ] No global scope pollution
 - [ ] No `Object` pollution
 - [ ] Ability to run examples in random order
-- [ ] Ability to specify `before` and `after` blocks for example group
-- [ ] Ability to define `let`, `let!`, `subject` and `subject!` for example group
+- [ ] Ability to specify `before` and `after` blocks for example
+  group
+- [ ] Ability to define `let`, `let!`, `subject` and `subject!`
+  for example group
 
 ## Usage
 
@@ -36,9 +38,9 @@ Spec2.describe Greeting do
 end
 ```
 
-If you have test suite written for `Spec` and you don't want to prefix each
-top-level describe with `Spec2`, you can use following opt-in configuration
-option.
+If you have test suite written for `Spec` and you don't want to
+prefix each top-level describe with `Spec2`, you can use following
+opt-in configuration option.
 
 ```crystal
 Spec2.enable_top_level_describe
@@ -55,6 +57,13 @@ TODO
 
 ```crystal
 expect(greeting.for("john")).to eq("hello, john")
+```
+
+If you have big codebase that runs on `Spec`, you can use this to
+enable `#should` on `Object`:
+
+```crystal
+Spec2.enable_should_on_object
 ```
 
 ### Random order runner
