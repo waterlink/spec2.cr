@@ -28,6 +28,11 @@ module Spec2
   end
 
   class ExpectationNotMet < Exception
+    getter example
+
+    def with_example(@example)
+      self
+    end
   end
 
   class Expectation
@@ -52,8 +57,9 @@ module Spec2
 
   class HighExample
     getter block
+    getter example
 
-    def initialize(&@block)
+    def initialize(@example, &@block)
     end
 
     def call
@@ -72,10 +78,9 @@ module Spec2
     end
 
     macro it(description, &block)
-      examples << ::Spec2::HighExample.new do
-        ::Spec2::Example
-          .new({{description}})
-          .call {{block}}
+      example = ::Spec2::Example.new({{description}})
+      examples << ::Spec2::HighExample.new(example) do
+        example.call {{block}}
       end
     end
   end
@@ -92,6 +97,7 @@ module Spec2
 
     def call
       with self yield
+      self
     end
 
     def expect(actual)
@@ -112,10 +118,32 @@ module Spec2
   end
 
   def self.run
+    errors = [] of ExpectationNotMet
+    count = 0
+
     contexts.each do |context|
       context.examples.each do |high_example|
-        high_example.call
+        begin
+          count += 1
+          high_example.call
+          print "."
+        rescue e : ExpectationNotMet
+          print "F"
+          errors << e.with_example(high_example.example)
+        end
       end
     end
+    puts
+
+    errors.each do |e|
+      example = e.example.not_nil!
+      puts
+      puts "In example: #{example.description}"
+      puts "Failure: #{e}"
+      puts e.backtrace.join("\n")
+    end
+
+    puts
+    puts "Examples: #{count}, failures: #{errors.count}"
   end
 end
