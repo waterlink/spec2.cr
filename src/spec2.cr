@@ -77,9 +77,18 @@ module Spec2
       @examples = [] of HighExample
     end
 
+    def examples
+      return _examples.shuffle if Spec2.random_order?
+      _examples
+    end
+
+    def _examples
+      @examples
+    end
+
     macro it(description, &block)
-      example = ::Spec2::Example.new({{description}})
-      examples << ::Spec2::HighExample.new(example) do
+      example = ::Spec2::Example.new(what, {{description}})
+      _examples << ::Spec2::HighExample.new(example) do
         example.call {{block}}
       end
     end
@@ -92,7 +101,8 @@ module Spec2
     getter description
     getter block
 
-    def initialize(@description)
+    def initialize(context_description, description)
+      @description = [context_description, description].join(" ")
     end
 
     def call
@@ -106,15 +116,29 @@ module Spec2
   end
 
   @@contexts = [] of Context
+  @@random_order = false
 
   def self.contexts
+    return _contexts.shuffle if random_order?
+    _contexts
+  end
+
+  def self._contexts
     @@contexts
   end
 
   def self.describe(what)
     context = Context.new(what)
-    contexts << context
+    _contexts << context
     with context yield
+  end
+
+  def self.random_order
+    @@random_order = true
+  end
+
+  def self.random_order?
+    @@random_order
   end
 
   def self.run
@@ -130,6 +154,9 @@ module Spec2
         rescue e : ExpectationNotMet
           print "F"
           errors << e.with_example(high_example.example)
+        rescue e
+          print "E"
+          errors << ExpectationNotMet.new(e.message, e).with_example(high_example.example)
         end
       end
     end
@@ -146,4 +173,8 @@ module Spec2
     puts
     puts "Examples: #{count}, failures: #{errors.count}"
   end
+end
+
+at_exit do
+  Spec2.run
 end

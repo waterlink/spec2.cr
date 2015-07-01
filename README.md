@@ -14,9 +14,9 @@ end
 
 ## Goals
 
-- [ ] No global scope pollution
-- [ ] No `Object` pollution
-- [ ] Ability to run examples in random order
+- [x] No global scope pollution
+- [x] No `Object` pollution
+- [x] Ability to run examples in random order
 - [ ] Ability to specify `before` and `after` blocks for example
   group
 - [ ] Ability to define `let`, `let!`, `subject` and `subject!`
@@ -30,8 +30,6 @@ require "spec2"
 
 ### Top-level describe
 
-TODO
-
 ```crystal
 Spec2.describe Greeting do
   # .. example groups and examples here ..
@@ -43,6 +41,7 @@ prefix each top-level describe with `Spec2`, you can use following
 opt-in configuration option.
 
 ```crystal
+# TODO
 Spec2.enable_top_level_describe
 
 # and then:
@@ -53,8 +52,6 @@ end
 
 ### `Expect` syntax
 
-TODO
-
 ```crystal
 expect(greeting.for("john")).to eq("hello, john")
 ```
@@ -63,17 +60,17 @@ If you have big codebase that runs on `Spec`, you can use this to
 enable `#should` on `Object`:
 
 ```crystal
+# TODO
 Spec2.enable_should_on_object
 ```
 
 ### Random order runner
 
-TODO
-
 ```crystal
 Spec2.random_order
 
 # this is what happens under the hood
+# TODO
 Spec2.configure_runner(Spec2::RandomRunner)
 ```
 
