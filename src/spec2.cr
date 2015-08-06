@@ -67,6 +67,17 @@ module Spec2
     end
   end
 
+  class Let(T)
+    getter name, block
+
+    def initialize(@name, &@block : -> :: T)
+    end
+
+    def call
+      block.call
+    end
+  end
+
   class Context
     getter what
     getter description
@@ -75,6 +86,7 @@ module Spec2
     def initialize(@what)
       @description = @what.to_s
       @examples = [] of HighExample
+      @lets = {} of String => Let
     end
 
     def examples
@@ -86,11 +98,20 @@ module Spec2
       @examples
     end
 
+    def lets
+      @lets
+    end
+
     macro it(description, &block)
-      example = ::Spec2::Example.new(what, {{description}})
+      example = ::Spec2::Example.new(itself, what, {{description}})
       _examples << ::Spec2::HighExample.new(example) do
         example.call {{block}}
       end
+    end
+
+    macro let(name, &block)
+      a_let = ::Spec2::Let({{name.type.id}}).new({{name.stringify}}) {{block}}
+      lets[{{name.var.stringify}}] = a_let
     end
   end
 
@@ -101,7 +122,7 @@ module Spec2
     getter description
     getter block
 
-    def initialize(context_description, description)
+    def initialize(@context, context_description, description)
       @description = [context_description, description].join(" ")
     end
 
@@ -112,6 +133,10 @@ module Spec2
 
     def expect(actual)
       Expectation.new(actual)
+    end
+
+    macro method_missing(name, args, block)
+      context.lets[{{name}}].call({{args.argify}}) {{block}}
     end
   end
 

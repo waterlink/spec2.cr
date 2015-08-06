@@ -14,8 +14,10 @@ class Greeting
 end
 
 Spec2.describe Greeting do
+  let(greeting :: Greeting) { Greeting.new("hello") }
+
   it "works" do
-    expect(Greeting.new("hello").for("world"))
+    expect(itself.greeting.for("world"))
       .to eq("hello, world")
   end
 
