@@ -78,15 +78,25 @@ module Spec2
     end
   end
 
+  class Hook
+    getter block
+
+    def initialize(&@block : (Example) ->)
+    end
+
+    def call(example)
+      block.call(example)
+    end
+  end
+
   class Context
-    getter what
-    getter description
-    getter examples
+    getter what, description, examples, before_hooks, lets
 
     def initialize(@what)
       @description = @what.to_s
       @examples = [] of HighExample
       @lets = {} of String => Let
+      @before_hooks = [] of Hook
     end
 
     def examples
@@ -96,22 +106,6 @@ module Spec2
 
     def _examples
       @examples
-    end
-
-    def lets
-      @lets
-    end
-
-    macro it(description, &block)
-      example = ::Spec2::Example.new(itself, what, {{description}})
-      _examples << ::Spec2::HighExample.new(example) do
-        example.call {{block}}
-      end
-    end
-
-    macro let(name, &block)
-      a_let = ::Spec2::Let({{name.type.id}}).new({{name.stringify}}) {{block}}
-      lets[{{name.var.stringify}}] = a_let
     end
   end
 
@@ -134,9 +128,41 @@ module Spec2
     def expect(actual)
       Expectation.new(actual)
     end
+  end
 
-    macro method_missing(name, args, block)
-      context.lets[{{name}}].call({{args.argify}}) {{block}}
+  module Macros
+    macro describe(what, &block)
+      context = ::Spec2::Context.new({{what}})
+      Spec2._contexts << context
+
+      macro it(description, &block)
+        example = ::Spec2::Example.new(context, context.what, \{{description}})
+        context._examples << ::Spec2::HighExample.new(example) do
+          example.call \{{block}}
+        end
+      end
+
+      macro before(&block)
+        hook = ::Spec2::Hook.new do |example|
+          example.call \{{block}}
+        end
+        context.before_hooks << hook
+      end
+
+      macro let(name, &block)
+        a_let = ::Spec2::Let(\{{name.type.id}}).new(\{{name.stringify}}) \{{block}}
+        context.lets[\{{name.var.stringify}}] = a_let
+        macro \{{name.var.id}}
+          context.lets[\{{name.var.stringify}}].not_nil!.call as \{{name.type.id}}
+        end
+      end
+
+      macro let!(name, &block)
+        let(\{{name}}) \{{block}}
+        before { \{{name.var.id}} }
+      end
+
+      {{block.body}}
     end
   end
 
@@ -150,12 +176,6 @@ module Spec2
 
   def self._contexts
     @@contexts
-  end
-
-  def self.describe(what)
-    context = Context.new(what)
-    _contexts << context
-    with context yield
   end
 
   def self.random_order
@@ -172,6 +192,10 @@ module Spec2
 
     contexts.each do |context|
       context.examples.each do |high_example|
+        context.before_hooks.each do |hook|
+          hook.call(high_example.example)
+        end
+
         begin
           count += 1
           high_example.call

@@ -13,19 +13,28 @@ class Greeting
   end
 end
 
-Spec2.describe Greeting do
-  let(greeting :: Greeting) { Greeting.new("hello") }
+module Specs
+  include Spec2::Macros
 
-  it "works" do
-    expect(itself.greeting.for("world"))
-      .to eq("hello, world")
-  end
+  describe Greeting do
+    let(greeting :: Greeting) { Greeting.new("hello") }
+    let!(stuff :: String) { p "==== some stuff in let! ====" }
 
-  it "doesnt" do
-    expect(2+2).not_to eq(4)
-  end
+    before do
+      p greeting.for("earth")
+    end
 
-  it "fails" do
-    raise "Hello Error"
+    it "works" do
+      expect(greeting.for("world"))
+        .to eq("hello, world")
+    end
+
+    it "doesnt" do
+      expect(2+2).not_to eq(4)
+    end
+
+    it "fails" do
+      raise "Hello Error"
+    end
   end
 end

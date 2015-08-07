@@ -31,18 +31,21 @@ require "spec2"
 ### Top-level describe
 
 ```crystal
-Spec2.describe Greeting do
-  # .. example groups and examples here ..
+module MySuperLibrary::Specs
+  include Spec2::Macros
+
+  describe Greeting do
+    # .. example groups and examples here ..
+  end
 end
 ```
 
-If you have test suite written for `Spec` and you don't want to
-prefix each top-level describe with `Spec2`, you can use following
-opt-in configuration option.
+If you have test suite written for `Spec` and you don't want to put each
+top-level describe in its own module, you can use just include `Spec::Macros`
+globally:
 
 ```crystal
-# TODO
-Spec2.enable_top_level_describe
+include Spec2::Macros
 
 # and then:
 describe Greeting do
@@ -81,7 +84,7 @@ TODO
 Full fledged example:
 
 ```crystal
-Spec2.describe Greeting do
+describe Greeting do
   subject(:greeting) { Greeting.new(greeting_exclamation) }
   subject!(:thing) { puts "=== subject with bang ===" }
 
