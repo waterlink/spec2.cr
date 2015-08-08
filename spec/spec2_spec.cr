@@ -30,6 +30,7 @@ module Specs
 
     subject(Greeting) { Greeting.new("hi") }
     subject(another_greeting :: Greeting) { Greeting.new("aloha") }
+    subject!(another_stuff :: String) { p "==== some other stuff in subject! ====" }
 
     it "works" do
       expect(greeting.for("world"))

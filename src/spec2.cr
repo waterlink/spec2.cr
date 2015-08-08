@@ -174,12 +174,20 @@ module Spec2
         before { \{{name.var.id}} }
       end
 
-      macro subject(name, &block)
+      macro _subject(type, name, &block)
         \{% if name.is_a?(DeclareVar) %}
-           let(\{{name}}) \{{block}}
+           \{{type}}(\{{name}}) \{{block}}
         \{% else %}
-           let(subject :: \{{name.id}}) \{{block}}
+           \{{type}}(subject :: \{{name.id}}) \{{block}}
         \{% {{:end.id}} %}
+      end
+
+      macro subject(name, &block)
+        _subject(let, \{{name}}) \{{block}}
+      end
+
+      macro subject!(name, &block)
+        _subject(let!, \{{name}}) \{{block}}
       end
 
       macro is_expected
