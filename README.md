@@ -17,7 +17,7 @@ end
 - [x] No global scope pollution
 - [x] No `Object` pollution
 - [x] Ability to run examples in random order
-- [ ] Ability to specify `before` and `after` blocks for example
+- [x] Ability to specify `before` and `after` blocks for example
   group
 - [ ] Ability to define `let`, `let!`, `subject` and `subject!`
   for example group

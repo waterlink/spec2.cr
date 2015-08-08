@@ -24,6 +24,10 @@ module Specs
       p greeting.for("earth")
     end
 
+    after do
+      p greeting.for("after-earth")
+    end
+
     it "works" do
       expect(greeting.for("world"))
         .to eq("hello, world")

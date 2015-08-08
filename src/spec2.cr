@@ -90,13 +90,14 @@ module Spec2
   end
 
   class Context
-    getter what, description, examples, before_hooks, lets
+    getter what, description, examples, before_hooks, after_hooks, lets
 
     def initialize(@what)
       @description = @what.to_s
       @examples = [] of HighExample
       @lets = {} of String => Let
       @before_hooks = [] of Hook
+      @after_hooks = [] of Hook
     end
 
     def examples
@@ -149,6 +150,13 @@ module Spec2
         context.before_hooks << hook
       end
 
+      macro after(&block)
+        hook = ::Spec2::Hook.new do |example|
+          example.call \{{block}}
+        end
+        context.after_hooks << hook
+      end
+
       macro let(name, &block)
         a_let = ::Spec2::Let(\{{name.type.id}}).new(\{{name.stringify}}) \{{block}}
         context.lets[\{{name.var.stringify}}] = a_let
@@ -199,6 +207,9 @@ module Spec2
         begin
           count += 1
           high_example.call
+          context.after_hooks.each do |hook|
+            hook.call(high_example.example)
+          end
           print "."
         rescue e : ExpectationNotMet
           print "F"
