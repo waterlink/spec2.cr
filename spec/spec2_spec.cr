@@ -28,10 +28,21 @@ module Specs
       p greeting.for("after-earth")
     end
 
+    subject(Greeting) { Greeting.new("hi") }
+    subject(another_greeting :: Greeting) { Greeting.new("aloha") }
+
     it "works" do
       expect(greeting.for("world"))
         .to eq("hello, world")
+
+      expect(subject.for("world"))
+        .to eq("hi, world")
+
+      expect(another_greeting.for("world"))
+        .to eq("aloha, world")
     end
+
+    it { is_expected.to eq(Greeting.new("hi")) }
 
     it "doesnt" do
       expect(2+2).not_to eq(4)

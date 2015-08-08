@@ -143,6 +143,10 @@ module Spec2
         end
       end
 
+      macro it(&block)
+        it(\{{block.body.stringify}}) \{{block}}
+      end
+
       macro before(&block)
         hook = ::Spec2::Hook.new do |example|
           example.call \{{block}}
@@ -168,6 +172,18 @@ module Spec2
       macro let!(name, &block)
         let(\{{name}}) \{{block}}
         before { \{{name.var.id}} }
+      end
+
+      macro subject(name, &block)
+        \{% if name.is_a?(DeclareVar) %}
+           let(\{{name}}) \{{block}}
+        \{% else %}
+           let(subject :: \{{name.id}}) \{{block}}
+        \{% {{:end.id}} %}
+      end
+
+      macro is_expected
+        expect(subject)
       end
 
       {{block.body}}
