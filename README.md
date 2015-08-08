@@ -14,13 +14,24 @@ end
 
 ## Goals
 
-- [x] No global scope pollution
-- [x] No `Object` pollution
-- [x] Ability to run examples in random order
-- [x] Ability to specify `before` and `after` blocks for example
+- No global scope pollution
+- No `Object` pollution
+- Ability to run examples in random order
+- Ability to specify `before` and `after` blocks for example
   group
-- [x] Ability to define `let`, `let!`, `subject` and `subject!`
+- Ability to define `let`, `let!`, `subject` and `subject!`
   for example group
+
+## Roadmap
+
+- [ ] Allow nested `describe` and `context`.
+- [ ] Proper `Reporter` protocol + built-in implementations + ability to
+  configure it.
+- [ ] Proper `Runner` protocol + built-in implementations + ability to
+  configure it.
+- [ ] Proper `Matcher` protocol + necessary built-in matchers + ability to
+  register them.
+- [ ] Ability to enable `should` syntax for legacy codebases.
 
 ## Usage
 
@@ -78,8 +89,6 @@ Spec2.configure_runner(Spec2::RandomRunner)
 ```
 
 ### `before`, `after`, `let` and others
-
-TODO
 
 Full fledged example:
 
