@@ -19,7 +19,7 @@ end
 - [x] Ability to run examples in random order
 - [x] Ability to specify `before` and `after` blocks for example
   group
-- [ ] Ability to define `let`, `let!`, `subject` and `subject!`
+- [x] Ability to define `let`, `let!`, `subject` and `subject!`
   for example group
 
 ## Usage
@@ -85,13 +85,13 @@ Full fledged example:
 
 ```crystal
 describe Greeting do
-  subject(:greeting) { Greeting.new(greeting_exclamation) }
-  subject!(:thing) { puts "=== subject with bang ===" }
+  subject(greeting :: Greeting) { Greeting.new(greeting_exclamation) }
+  subject!(thing :: Int) { puts "=== subject with bang ===" }
 
-  let(:greeting_exclamation) { "hello" }
-  let(:name) { "world" }
+  let(greeting_exclamation :: String) { "hello" }
+  let(name :: String) { "world" }
 
-  let!(:something) { puts "=== let with bang ===" }
+  let!(something :: Int) { puts "=== let with bang ===" }
 
   before do
     puts "=== before example ==="
@@ -102,22 +102,22 @@ describe Greeting do
   end
 
   describe "#for" do
-    subject(:greeting_string) { greeting.for(name) }
+    subject(greeting_string :: String) { greeting.for(name) }
 
     it "greets provided person" do
-      expect(:greeting_string).to eq("hello, world")
+      expect(greeting_string).to eq("hello, world")
     end
 
     context "when name is john" do
-      let(:name) { "john" }
+      let(name :: String) { "john" }
 
       it "greets john" do
-        expect(:greeting_string).to eq("hello, john")
+        expect(greeting_string).to eq("hello, john")
       end
     end
 
     context "when greeting exclamation is different" do
-      let(:greeting_exclamation) { "hallo" }
+      let(greeting_exclamation :: String) { "hallo" }
 
       it "greets world with different exclamation" do
         expect(greeting_string).to eq("hallo, world")
