@@ -31,6 +31,35 @@ module Spec2
       @reporter
     end
 
+    def run_context(reporter, context)
+      context.examples.each do |high_example|
+        example = high_example.example
+        context.before_hooks.each do |hook|
+          hook.call(example)
+        end
+
+        begin
+          reporter.example_started(example)
+          high_example.call
+          context.after_hooks.each do |hook|
+            hook.call(example)
+          end
+          reporter.example_succeeded(example)
+        rescue e : ExpectationNotMet
+          reporter.example_failed(example, e.with_example(example))
+        rescue e
+          reporter.example_errored(
+            example,
+            ExpectationNotMet.new(e.message, e).with_example(example),
+          )
+        end
+      end
+
+      context.contexts.each do |nested_context|
+        run_context(reporter, nested_context)
+      end
+    end
+
     def run
       reporter_class = self.reporter
       unless reporter_class
@@ -42,28 +71,7 @@ module Spec2
       reporter = reporter_class.new
 
       contexts.each do |context|
-        context.examples.each do |high_example|
-          example = high_example.example
-          context.before_hooks.each do |hook|
-            hook.call(example)
-          end
-
-          begin
-            reporter.example_started(example)
-            high_example.call
-            context.after_hooks.each do |hook|
-              hook.call(example)
-            end
-            reporter.example_succeeded(example)
-          rescue e : ExpectationNotMet
-            reporter.example_failed(example, e.with_example(example))
-          rescue e
-            reporter.example_errored(
-              example,
-              ExpectationNotMet.new(e.message, e).with_example(example),
-            )
-          end
-        end
+        run_context(reporter, context)
       end
 
       reporter.report

@@ -2,7 +2,10 @@ module Spec2
   class Context
     getter what, description, contexts, examples, before_hooks, after_hooks, lets
 
-    def initialize(@what)
+    def initialize(what, parent_what=nil)
+      what = "#{parent_what} #{what}" if parent_what
+
+      @what = what
       @description = @what.to_s
       @examples = [] of HighExample
       @contexts = [] of Context

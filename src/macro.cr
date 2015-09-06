@@ -1,7 +1,7 @@
 module Spec2
   module Macros
     macro describe(what, &block)
-      context = ::Spec2::Context.new({{what}})
+      context = ::Spec2::Context.new({{what}}, Spec2.current_context.what)
 
       Spec2.current_context._contexts << context
 

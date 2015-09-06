@@ -32,6 +32,10 @@ module Spec2
     @@context = context
   end
 
+  def self.what
+    nil
+  end
+
   delegate run, runner
   delegate configure_reporter, runner
   delegate random_order?, runner
