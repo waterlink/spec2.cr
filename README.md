@@ -25,7 +25,7 @@ end
 ## Roadmap
 
 - [ ] Allow nested `describe` and `context`.
-- [ ] Proper `Reporter` protocol + built-in implementations + ability to
+- [x] Proper `Reporter` protocol + built-in implementations + ability to
   configure it.
 - [ ] Proper `Runner` protocol + built-in implementations + ability to
   configure it.
@@ -87,6 +87,15 @@ Spec2.random_order
 # TODO
 Spec2.configure_runner(Spec2::RandomRunner)
 ```
+
+### Configuring custom Reporter
+
+```crystal
+Spec2.configure_reporter(MyReporter)
+```
+
+Class `MyReporter` should implement `Reporte` protocol [here](src/reporter.cr).
+See also [an example implementation](src/reporters/default.cr).
 
 ### `before`, `after`, `let` and others
 
