@@ -49,4 +49,41 @@ module Spec2::Specs
         .to eq(["more stuff"])
     end
   end
+
+  describe "#context" do
+    it "narrows context with string" do
+      runner = with_runner do
+        describe Greeting do
+          context "when name is specified" do
+          end
+        end
+      end
+
+      expect(runner.contexts.map &.description)
+        .to eq(["Greeting"])
+
+      expect(runner.contexts.first.contexts.map &.description)
+        .to eq(["when name is specified"])
+    end
+
+    it "allows nesting" do
+      runner = with_runner do
+        describe Greeting do
+          context "when name is specified" do
+            context "when name is invalid" do
+            end
+          end
+        end
+      end
+
+      expect(runner.contexts.map &.description)
+        .to eq(["Greeting"])
+
+      expect(runner.contexts.first.contexts.map &.description)
+        .to eq(["when name is specified"])
+
+      expect(runner.contexts.first.contexts.first.contexts.map &.description)
+        .to eq(["when name is invalid"])
+    end
+  end
 end

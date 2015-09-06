@@ -11,6 +11,10 @@ module Spec2
       Spec2.current_context = %old_context
     end
 
+    macro context(what, &block)
+      describe({{what}}) {{block}}
+    end
+
     macro it(description, &block)
       example = ::Spec2::Example.new(context, context.what, {{description}})
       context._examples << ::Spec2::HighExample.new(example) do
