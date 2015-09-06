@@ -51,8 +51,6 @@ module Spec2
       return unless matcher.match(actual)
       raise ExpectationNotMet.new(matcher.failure_message_when_negated)
     end
-
-    alias_method to_not, not_to
   end
 
   class HighExample
@@ -78,6 +76,12 @@ module Spec2
     end
   end
 
+  class LetWrapper
+    getter let
+    def initialize(@let)
+    end
+  end
+
   class Hook
     getter block
 
@@ -95,7 +99,7 @@ module Spec2
     def initialize(@what)
       @description = @what.to_s
       @examples = [] of HighExample
-      @lets = {} of String => Let
+      @lets = {} of String => LetWrapper
       @before_hooks = [] of Hook
       @after_hooks = [] of Hook
     end
@@ -163,9 +167,9 @@ module Spec2
 
       macro let(name, &block)
         a_let = ::Spec2::Let(\{{name.type.id}}).new(\{{name.stringify}}) \{{block}}
-        context.lets[\{{name.var.stringify}}] = a_let
+        context.lets[\{{name.var.stringify}}] = ::Spec2::LetWrapper.new(a_let)
         macro \{{name.var.id}}
-          context.lets[\{{name.var.stringify}}].not_nil!.call as \{{name.type.id}}
+          context.lets[\{{name.var.stringify}}].not_nil!.let.call as \{{name.type.id}}
         end
       end
 
@@ -175,11 +179,11 @@ module Spec2
       end
 
       macro _subject(type, name, &block)
-        \{% if name.is_a?(DeclareVar) %}
+        {\% if name.is_a?(DeclareVar) %}
            \{{type}}(\{{name}}) \{{block}}
-        \{% else %}
+        {\% else %}
            \{{type}}(subject :: \{{name.id}}) \{{block}}
-        \{% {{:end.id}} %}
+        {\% {{:end.id}} %}
       end
 
       macro subject(name, &block)
