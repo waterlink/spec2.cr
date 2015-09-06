@@ -25,6 +25,8 @@ module Spec2
       end
 
       def report
+        puts
+
         @errors.each do |e|
           example = e.example.not_nil!
           puts
