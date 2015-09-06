@@ -1,8 +1,9 @@
 module Spec2
   class Context
-    getter what, description, contexts, examples, before_hooks, after_hooks, lets
+    getter what, description, contexts, examples, lets, parent_context, _before_hooks, _after_hooks
 
-    def initialize(what, parent_what=nil)
+    def initialize(what, @parent_context)
+      parent_what = parent_context.what
       what = "#{parent_what} #{what}" if parent_what
 
       @what = what
@@ -10,8 +11,20 @@ module Spec2
       @examples = [] of HighExample
       @contexts = [] of Context
       @lets = {} of String => LetWrapper
-      @before_hooks = [] of Hook
-      @after_hooks = [] of Hook
+      @_before_hooks = [] of Hook
+      @_after_hooks = [] of Hook
+    end
+
+    def before_hooks
+      (@realized_before_hooks ||=
+       parent_context.before_hooks + _before_hooks)
+        .not_nil!
+    end
+
+    def after_hooks
+      (@realized_after_hooks ||=
+       parent_context.after_hooks + _after_hooks)
+        .not_nil!
     end
 
     def contexts

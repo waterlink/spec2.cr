@@ -15,6 +15,8 @@ module Spec2
 
   @@runner = Runner.new
   @@context = Spec2
+  @@before_hooks = [] of Hook
+  @@after_hooks = [] of Hook
 
   def self.runner
     @@runner
@@ -30,6 +32,14 @@ module Spec2
 
   def self.current_context=(context)
     @@context = context
+  end
+
+  def self.before_hooks
+    @@before_hooks
+  end
+
+  def self.after_hooks
+    @@after_hooks
   end
 
   def self.what

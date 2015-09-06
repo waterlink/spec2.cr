@@ -199,4 +199,104 @@ module Spec2::Specs
       end
     end
   end
+
+  describe "#before" do
+    it "runs before any example" do
+      events = [] of Symbol
+      runner = with_runner do
+        describe "a thing" do
+          before { events << :before_a }
+
+          it "does something" do
+            events << :example_a
+          end
+
+          before { events << :before_b }
+
+          context "when something hapenned" do
+            before { events << :nested_before }
+            it "does something else" do
+              events << :example_b
+            end
+          end
+
+          it "does something different" do
+            events << :example_c
+          end
+
+          before { events << :before_c }
+
+          it "does nothing" do
+            events << :example_d
+          end
+        end
+      end
+
+      runner.run
+
+      expect(events).to eq([
+        :before_a, :before_b, :before_c,
+        :example_a,
+
+        :before_a, :before_b, :before_c,
+        :example_c,
+
+        :before_a, :before_b, :before_c,
+        :example_d,
+
+        :before_a, :before_b, :before_c, :nested_before,
+        :example_b,
+      ])
+    end
+  end
+
+  describe "#after" do
+    it "runs after any example" do
+      events = [] of Symbol
+      runner = with_runner do
+        describe "a thing" do
+          after { events << :after_a }
+
+          it "does something" do
+            events << :example_a
+          end
+
+          after { events << :after_b }
+
+          context "when something hapenned" do
+            after { events << :nested_after }
+            it "does something else" do
+              events << :example_b
+            end
+          end
+
+          it "does something different" do
+            events << :example_c
+          end
+
+          after { events << :after_c }
+
+          it "does nothing" do
+            events << :example_d
+          end
+        end
+      end
+
+      runner.run
+
+      expect(events).to eq([
+        :example_a,
+        :after_a, :after_b, :after_c,
+
+        :example_c,
+        :after_a, :after_b, :after_c,
+
+        :example_d,
+        :after_a, :after_b, :after_c,
+
+        :example_b,
+        :after_a, :after_b, :after_c, :nested_after,
+      ])
+    end
+  end
 end

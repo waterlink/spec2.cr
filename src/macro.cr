@@ -1,7 +1,7 @@
 module Spec2
   module Macros
     macro describe(what, &block)
-      context = ::Spec2::Context.new({{what}}, Spec2.current_context.what)
+      context = ::Spec2::Context.new({{what}}, Spec2.current_context)
 
       Spec2.current_context._contexts << context
 
@@ -9,6 +9,10 @@ module Spec2
       Spec2.current_context = context
       {{block.body}}
       Spec2.current_context = %old_context
+
+      if %old_context.is_a?(::Spec2::Context)
+        context = %old_context 
+      end
     end
 
     macro context(what, &block)
@@ -30,14 +34,14 @@ module Spec2
       hook = ::Spec2::Hook.new do |example|
         example.call {{block}}
       end
-      context.before_hooks << hook
+      context._before_hooks << hook
     end
 
     macro after(&block)
       hook = ::Spec2::Hook.new do |example|
         example.call {{block}}
       end
-      context.after_hooks << hook
+      context._after_hooks << hook
     end
 
     macro let(name, &block)
