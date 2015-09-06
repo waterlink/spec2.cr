@@ -52,7 +52,7 @@ end
 ```
 
 If you have test suite written for `Spec` and you don't want to put each
-top-level describe in its own module, you can use just include `Spec::Macros`
+top-level describe in its own module, you can just include `Spec::Macros`
 globally:
 
 ```crystal
@@ -94,7 +94,7 @@ Spec2.configure_runner(Spec2::RandomRunner)
 Spec2.configure_reporter(MyReporter)
 ```
 
-Class `MyReporter` should implement `Reporte` protocol [here](src/reporter.cr).
+Class `MyReporter` should implement `Reporter` protocol [here](src/reporter.cr).
 See also [an example implementation](src/reporters/default.cr).
 
 ### `before`, `after`, `let` and others
