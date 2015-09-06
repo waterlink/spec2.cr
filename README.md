@@ -24,7 +24,7 @@ end
 
 ## Roadmap
 
-- [ ] Allow nested `describe` and `context`.
+- [x] Allow nested `describe` and `context`.
 - [x] Proper `Reporter` protocol + built-in implementations + ability to
   configure it.
 - [ ] Proper `Runner` protocol + built-in implementations + ability to
