@@ -6,10 +6,13 @@ require "./let"
 require "./hook"
 require "./context"
 require "./macro"
+require "./reporter"
+require "./reporters/*"
 
 module Spec2
   @@contexts = [] of Context
   @@random_order = false
+  @@reporter = nil
 
   def self.contexts
     return _contexts.shuffle if random_order?
@@ -28,46 +31,54 @@ module Spec2
     @@random_order
   end
 
+  def self.configure_reporter(reporter)
+    @@reporter = reporter
+  end
+
+  def self.reporter
+    @@reporter
+  end
+
   def self.run
-    errors = [] of ExpectationNotMet
-    count = 0
+    reporter_class = self.reporter
+    unless reporter_class
+      raise ReporterIsNotConfigured.new(
+        "Please configure reporter with Spec2.configure_reporter(reporter)",
+      )
+    end
+
+    reporter = reporter_class.new
 
     contexts.each do |context|
       context.examples.each do |high_example|
+        example = high_example.example
         context.before_hooks.each do |hook|
-          hook.call(high_example.example)
+          hook.call(example)
         end
 
         begin
-          count += 1
+          reporter.example_started(example)
           high_example.call
           context.after_hooks.each do |hook|
-            hook.call(high_example.example)
+            hook.call(example)
           end
-          print "."
+          reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
-          print "F"
-          errors << e.with_example(high_example.example)
+          reporter.example_failed(example, e.with_example(example))
         rescue e
-          print "E"
-          errors << ExpectationNotMet.new(e.message, e).with_example(high_example.example)
+          reporter.example_errored(
+            example,
+            ExpectationNotMet.new(e.message, e).with_example(example),
+          )
         end
       end
     end
-    puts
 
-    errors.each do |e|
-      example = e.example.not_nil!
-      puts
-      puts "In example: #{example.description}"
-      puts "Failure: #{e}"
-      puts e.backtrace.join("\n")
-    end
-
-    puts
-    puts "Examples: #{count}, failures: #{errors.count}"
+    reporter.report
   end
 end
+
+Spec2.configure_reporter(Spec2::Reporters::Default)
 
 at_exit do
   Spec2.run

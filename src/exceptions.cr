@@ -6,4 +6,7 @@ module Spec2
       self
     end
   end
+
+  class ReporterIsNotConfigured < Exception
+  end
 end
