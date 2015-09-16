@@ -3,11 +3,11 @@ module Spec2
     getter block
     getter example
 
-    def initialize(@example, &@block)
+    def initialize(@example, &@block : Context -> Void)
     end
 
-    def call
-      block.call
+    def call(context)
+      block.call(context)
     end
   end
 

@@ -32,17 +32,19 @@ module Spec2
     end
 
     def run_context(reporter, context)
+      reporter.context_started(context)
+
       context.examples.each do |high_example|
         example = high_example.example
         context.before_hooks.each do |hook|
-          hook.call(example)
+          hook.call(example, context)
         end
 
         begin
           reporter.example_started(example)
-          high_example.call
+          high_example.call(context)
           context.after_hooks.each do |hook|
-            hook.call(example)
+            hook.call(example, context)
           end
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet

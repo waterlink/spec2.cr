@@ -12,6 +12,9 @@ module Spec2
         @received = [] of TestEvent
       end
 
+      def context_started(context)
+      end
+
       def example_started(example)
         received << TestEvent.new(:example_started, example, nil)
       end

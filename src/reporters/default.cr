@@ -6,6 +6,9 @@ module Spec2
         @errors = [] of ExpectationNotMet
       end
 
+      def context_started(context)
+      end
+
       def example_started(example)
         @count += 1
       end

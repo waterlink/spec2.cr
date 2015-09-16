@@ -299,4 +299,25 @@ module Spec2::Specs
       ])
     end
   end
+
+  describe "#let" do
+    context "when not referenced" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      it "is not evaluated" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+
+    context "when referenced" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      it "is evaluated" do
+        stuff
+        expect(events).to eq([:evaluated, :other])
+      end
+    end
+  end
 end
