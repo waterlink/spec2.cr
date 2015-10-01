@@ -39,7 +39,7 @@ module Spec2
         end
 
         puts
-        puts "Examples: #{@count}, failures: #{@errors.count}"
+        puts "Examples: #{@count}, failures: #{@errors.size}"
       end
     end
   end
