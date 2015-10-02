@@ -21,11 +21,9 @@ module Spec2
 
     macro it(description, &block)
       example = ::Spec2::Example.new(context, context.what, {{description}})
-      puts "adding #{example.inspect}"
       context._examples << ::Spec2::HighExample.new(example) do |context|
         example.call {{block}}
       end
-      puts "#{context.description} :: added #{example.description} -> #{context._examples.size} vs #{context.examples.size}"
     end
 
     macro it(&block)

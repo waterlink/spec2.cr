@@ -6,7 +6,7 @@ module Spec2
     end
 
     def call
-      block.call
+      @_result ||= block.call
     end
   end
 
