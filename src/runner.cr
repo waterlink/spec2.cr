@@ -54,6 +54,8 @@ module Spec2
             example,
             ExpectationNotMet.new(e.message, e).with_example(example),
           )
+        ensure
+          context.reset
         end
       end
 

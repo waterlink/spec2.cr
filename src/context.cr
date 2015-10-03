@@ -10,9 +10,15 @@ module Spec2
       @description = @what.to_s
       @examples = [] of HighExample
       @contexts = [] of Context
-      @lets = {} of String => LetWrapper
+      @lets = parent_context.lets.dup
       @_before_hooks = [] of Hook
       @_after_hooks = [] of Hook
+    end
+
+    def reset
+      lets.each do |_, wrapper|
+        wrapper.let.reset
+      end
     end
 
     def before_hooks

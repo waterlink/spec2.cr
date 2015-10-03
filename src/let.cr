@@ -8,6 +8,10 @@ module Spec2
     def call
       @_result ||= block.call
     end
+
+    def reset
+      @_result = nil
+    end
   end
 
   class LetWrapper

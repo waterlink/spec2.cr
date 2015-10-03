@@ -301,6 +301,20 @@ module Spec2::Specs
   end
 
   describe "#let" do
+    context "when referenced" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      it "is evaluated" do
+        stuff
+        expect(events).to eq([:evaluated])
+      end
+
+      it "and not evaluated in next example" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+
     context "when not referenced" do
       let(events :: Array(Symbol)) { [] of Symbol }
       let(stuff :: String) { events << :evaluated; "stuff" }
@@ -310,13 +324,25 @@ module Spec2::Specs
       end
     end
 
-    context "when referenced" do
+    context "when inherited from parent context" do
       let(events :: Array(Symbol)) { [] of Symbol }
       let(stuff :: String) { events << :evaluated; "stuff" }
 
-      it "is evaluated" do
-        stuff
-        expect(events).to eq([:evaluated, :other])
+      context "when referenced" do
+        it "is evaluated" do
+          stuff
+          expect(events).to eq([:evaluated])
+        end
+
+        it "and not evaluated in next example" do
+          expect(events).to eq([] of Symbol)
+        end
+      end
+
+      context "when not referenced" do
+        it "is not evaluated" do
+          expect(events).to eq([] of Symbol)
+        end
       end
     end
   end

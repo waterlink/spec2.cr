@@ -46,6 +46,10 @@ module Spec2
     nil
   end
 
+  def self.lets
+    {} of String => LetWrapper
+  end
+
   delegate run, runner
   delegate configure_reporter, runner
   delegate random_order?, runner
