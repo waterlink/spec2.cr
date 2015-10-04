@@ -17,6 +17,7 @@ module Spec2
   @@context = Spec2
   @@before_hooks = [] of Hook
   @@after_hooks = [] of Hook
+  @@execution_context = Spec2
 
   def self.runner
     @@runner
@@ -48,6 +49,14 @@ module Spec2
 
   def self.lets
     {} of String => LetWrapper
+  end
+
+  def self.execution_context
+    @@execution_context
+  end
+
+  def self.execution_context=(context)
+    @@execution_context = context
   end
 
   delegate run, runner

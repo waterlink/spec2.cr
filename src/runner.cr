@@ -35,6 +35,8 @@ module Spec2
       reporter.context_started(context)
 
       context.examples.each do |high_example|
+        context.reset
+
         example = high_example.example
         context.before_hooks.each do |hook|
           hook.call(example, context)
