@@ -1,4 +1,14 @@
 module Spec2
+  module GlobalMacros
+    macro describe(what, &block)
+      module {{what.stringify.gsub(/[^A-Za-z0-9_]/, "").camelcase.id}}::Specs
+        include ::Spec2::Macros
+
+        describe({{what.stringify}}) {{block}}
+      end
+    end
+  end
+
   module Macros
     macro describe(what, &block)
       context = ::Spec2::Context.new({{what}}, Spec2.current_context)

@@ -42,9 +42,7 @@ require "spec2"
 ### Top-level describe
 
 ```crystal
-module MySuperLibrary::Specs
-  include Spec2::Macros
-
+Spec2.describe MySuperLibrary do
   describe Greeting do
     # .. example groups and examples here ..
   end

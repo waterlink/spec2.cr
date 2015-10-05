@@ -11,6 +11,7 @@ require "./reporters/*"
 require "./runner"
 
 module Spec2
+  include GlobalMacros
   extend self
 
   @@runner = Runner.new
