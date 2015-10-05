@@ -248,6 +248,29 @@ module Spec2::Specs
         :example_b,
       ])
     end
+
+    describe "inheritance from parent context" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      before { events << :success }
+
+      context "in inner context" do
+        it "is still evaluated" do
+          expect(events).to eq([:success, :more_success])
+        end
+
+        before { events << :more_success }
+
+        context "in deeper context" do
+          it "is still evaluated" do
+            expect(events).to eq([:success, :more_success])
+          end
+        end
+      end
+
+      it "is not evaluated in parent context" do
+        expect(events).to eq([:success])
+      end
+    end
   end
 
   describe "#after" do
@@ -297,6 +320,82 @@ module Spec2::Specs
         :example_b,
         :after_a, :after_b, :after_c, :nested_after,
       ])
+    end
+  end
+
+  describe "#let" do
+    context "when referenced" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      it "is evaluated" do
+        stuff
+        expect(events).to eq([:evaluated])
+      end
+
+      it "is evaluated only once" do
+        stuff
+        stuff
+        stuff
+        expect(events).to eq([:evaluated])
+      end
+
+      it "is evaluated to correct value" do
+        expect(stuff).to eq("stuff")
+      end
+
+      it "and not evaluated in next example" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+
+    context "when not referenced" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      it "is not evaluated" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+
+    context "when inherited from parent context" do
+      let(events :: Array(Symbol)) { [] of Symbol }
+      let(stuff :: String) { events << :evaluated; "stuff" }
+
+      context "when referenced" do
+        it "is evaluated" do
+          stuff
+          expect(events).to eq([:evaluated])
+        end
+
+        it "and not evaluated in next example" do
+          expect(events).to eq([] of Symbol)
+        end
+      end
+
+      context "when not referenced" do
+        it "is not evaluated" do
+          expect(events).to eq([] of Symbol)
+        end
+      end
+    end
+  end
+
+  describe "#let!" do
+    let(events :: Array(Symbol)) { [] of Symbol }
+    let!(stuff :: String) { events << :evaluated; "stuff" }
+
+    context "when not used" do
+      it "is evaluated" do
+        expect(events).to eq([:evaluated])
+      end
+    end
+
+    context "when used" do
+      it "is evaluated only once" do
+        stuff
+        expect(events).to eq([:evaluated])
+      end
     end
   end
 end

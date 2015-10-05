@@ -6,7 +6,11 @@ module Spec2
     end
 
     def call
-      block.call
+      @_result ||= block.call
+    end
+
+    def reset
+      @_result = nil
     end
   end
 

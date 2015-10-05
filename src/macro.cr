@@ -21,8 +21,8 @@ module Spec2
 
     macro it(description, &block)
       example = ::Spec2::Example.new(context, context.what, {{description}})
-      context._examples << ::Spec2::HighExample.new(example) do
-        example.call {{block}}
+      context._examples << ::Spec2::HighExample.new(example) do |context|
+        example.call(context) {{block}}
       end
     end
 
@@ -31,24 +31,24 @@ module Spec2
     end
 
     macro before(&block)
-      hook = ::Spec2::Hook.new do |example|
-        example.call {{block}}
+      hook = ::Spec2::Hook.new do |example, context|
+        example.call(context) {{block}}
       end
       context._before_hooks << hook
     end
 
     macro after(&block)
-      hook = ::Spec2::Hook.new do |example|
-        example.call {{block}}
+      hook = ::Spec2::Hook.new do |example, context|
+        example.call(context) {{block}}
       end
       context._after_hooks << hook
     end
 
     macro let(name, &block)
       a_let = ::Spec2::Let({{name.type.id}}).new({{name.stringify}}) {{block}}
-      context.lets[{{name.var.stringify}}] = ::Spec2::LetWrapper.new(a_let)
+      context._lets[{{name.var.stringify}}] = ::Spec2::LetWrapper.new(a_let)
       macro {{name.var.id}}
-        context.lets[{{name.var.stringify}}].not_nil!.let.call as {{name.type.id}}
+        Spec2.execution_context.lets[{{name.var.stringify}}].not_nil!.let.call as {{name.type.id}}
       end
     end
 

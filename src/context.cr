@@ -1,6 +1,6 @@
 module Spec2
   class Context
-    getter what, description, contexts, examples, lets, parent_context, _before_hooks, _after_hooks
+    getter what, description, contexts, examples, _lets, parent_context, _before_hooks, _after_hooks
 
     def initialize(what, @parent_context)
       parent_what = parent_context.what
@@ -10,21 +10,15 @@ module Spec2
       @description = @what.to_s
       @examples = [] of HighExample
       @contexts = [] of Context
-      @lets = {} of String => LetWrapper
+      @_lets = {} of String => LetWrapper
       @_before_hooks = [] of Hook
       @_after_hooks = [] of Hook
     end
 
-    def before_hooks
-      (@realized_before_hooks ||=
-       parent_context.before_hooks + _before_hooks)
-        .not_nil!
-    end
-
-    def after_hooks
-      (@realized_after_hooks ||=
-       parent_context.after_hooks + _after_hooks)
-        .not_nil!
+    def reset
+      lets.each do |_, wrapper|
+        wrapper.let.reset
+      end
     end
 
     def contexts
@@ -43,6 +37,20 @@ module Spec2
 
     def _examples
       @examples
+    end
+
+    def lets
+      @_realized_lets ||= parent_context.lets.merge(_lets)
+    end
+
+    def before_hooks
+      @_realized_before_hooks ||=
+        parent_context.before_hooks + _before_hooks
+    end
+
+    def after_hooks
+      @_realized_after_hooks ||=
+        parent_context.after_hooks + _after_hooks
     end
   end
 end
