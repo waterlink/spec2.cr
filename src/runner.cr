@@ -1,53 +1,23 @@
 module Spec2
   class Runner
-    def initialize
-      @contexts = [] of Context
-      @random_order = false
-      @reporter = nil
+    getter reporter, root
+    def initialize(@root)
     end
 
     def contexts
-      return _contexts.shuffle if random_order?
-      _contexts
+      [root]
     end
 
-    def _contexts
-      @contexts
-    end
-
-    def random_order
-      @random_order = true
-    end
-
-    def random_order?
-      @random_order
-    end
-
-    def configure_reporter(reporter)
-      @reporter = reporter
-    end
-
-    def reporter
-      @reporter
+    def configure_reporter(@reporter)
     end
 
     def run_context(reporter, context)
       reporter.context_started(context)
 
-      context.examples.each do |high_example|
-        context.reset
-
-        example = high_example.example
-        context.before_hooks.each do |hook|
-          hook.call(example, context)
-        end
-
+      context.examples.each do |example|
         begin
           reporter.example_started(example)
-          high_example.call(context)
-          context.after_hooks.each do |hook|
-            hook.call(example, context)
-          end
+          example.call
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
           reporter.example_failed(example, e.with_example(example))
@@ -56,8 +26,6 @@ module Spec2
             example,
             ExpectationNotMet.new(e.message, e).with_example(example),
           )
-        ensure
-          context.reset
         end
       end
 
@@ -75,11 +43,7 @@ module Spec2
       end
 
       reporter = reporter_class.new
-
-      contexts.each do |context|
-        run_context(reporter, context)
-      end
-
+      run_context(reporter, root)
       reporter.report
     end
   end

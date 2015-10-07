@@ -1,56 +1,73 @@
 module Spec2
   class Context
-    getter what, description, contexts, examples, _lets, parent_context, _before_hooks, _after_hooks
+    extend Matchers
 
-    def initialize(what, @parent_context)
-      parent_what = parent_context.what
-      what = "#{parent_what} #{what}" if parent_what
-
-      @what = what
-      @description = @what.to_s
-      @examples = [] of HighExample
-      @contexts = [] of Context
-      @_lets = {} of String => LetWrapper
-      @_before_hooks = [] of Hook
-      @_after_hooks = [] of Hook
+    macro it(what, file = __FILE__, line = __LINE__, &block)
+      instance.examples << ::Spec2::Example.new(self, {{what}}, {{file}}, {{line}}) {{block}}
     end
 
-    def reset
-      lets.each do |_, wrapper|
-        wrapper.let.reset
+    macro describe(what, file = __FILE__, line = __LINE__, &block)
+      ::Spec2.describe({{what}}, {{file}}, {{line}}) {{block}}
+    end
+
+    macro context(what, file = __FILE__, line = __LINE__, &block)
+      describe({{what}}, {{file}}, {{line}}) {{block}}
+    end
+
+    macro before(&block)
+    end
+
+    macro after(&block)
+    end
+
+    macro let(decl, &block)
+      def {{decl.id}}
+        @_{{decl.id}} ||= {{decl.id}}!
+      end
+
+      def {{decl.id}}!
+        {{block.body}}
+      end
+
+      def self.{{decl.id}}
+        instance.{{decl.id}}
       end
     end
 
-    def contexts
-      return _contexts.shuffle if Spec2.random_order?
-      _contexts
+    def self.instance
+      @@_instance ||= new
     end
 
-    def _contexts
-      @contexts
+    def self.expect(actual)
+      Expectation.new(actual)
     end
 
     def examples
-      return _examples.shuffle if Spec2.random_order?
-      _examples
+      @_examples ||= [] of Example
     end
 
-    def _examples
-      @examples
+    def contexts
+      @_contexts ||= [] of Context
     end
 
-    def lets
-      @_realized_lets ||= parent_context.lets.merge(_lets)
+    def description
+      ""
     end
 
-    def before_hooks
-      @_realized_before_hooks ||=
-        parent_context.before_hooks + _before_hooks
+    def description
+      ""
     end
 
-    def after_hooks
-      @_realized_after_hooks ||=
-        parent_context.after_hooks + _after_hooks
+    def what
+      ""
+    end
+
+    def file
+      "spec2_root_context"
+    end
+
+    def line
+      1
     end
   end
 end
