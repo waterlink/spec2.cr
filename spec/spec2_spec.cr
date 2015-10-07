@@ -47,43 +47,43 @@ Spec2.describe "#describe" do
   end
 end
 
-#Spec2.describe "#context" do
-#  with_runner("context") do
-#    describe Greeting do
-#      context "when name is specified" do
-#      end
-#    end
-#  end
-#
-#  it "narrows context with string" do
-#    expect(RUNNERS["context"].contexts.map &.description)
-#      .to eq(["Greeting"])
-#
-#    expect(RUNNERS["context"].contexts.first.contexts.map &.description)
-#      .to eq(["Greeting when name is specified"])
-#  end
-#
-#  with_runner("context_nested") do
-#    describe Greeting do
-#      context "when name is specified" do
-#        context "when name is invalid" do
-#        end
-#      end
-#    end
-#  end
-#
-#  it "allows nesting" do
-#    expect(RUNNERS["context_nested"].contexts.map &.description)
-#      .to eq(["Greeting"])
-#
-#    expect(RUNNERS["context_nested"].contexts.first.contexts.map &.description)
-#      .to eq(["Greeting when name is specified"])
-#
-#    expect(RUNNERS["context_nested"].contexts.first.contexts.first.contexts.map &.description)
-#      .to eq(["Greeting when name is specified when name is invalid"])
-#  end
-#end
-#
+Spec2.describe "#context" do
+  with_runner("context") do
+    describe Greeting do
+      context "when name is specified" do
+      end
+    end
+  end
+
+  it "narrows context with string" do
+    expect(RUNNERS["context"].root.contexts.map &.description)
+      .to eq(["Greeting"])
+
+    expect(RUNNERS["context"].root.contexts.first.contexts.map &.description)
+      .to eq(["Greeting when name is specified"])
+  end
+
+  #with_runner("context_nested") do
+  #  describe Greeting do
+  #    context "when name is specified" do
+  #      context "when name is invalid" do
+  #      end
+  #    end
+  #  end
+  #end
+
+  #it "allows nesting" do
+  #  expect(RUNNERS["context_nested"].root.contexts.map &.description)
+  #    .to eq(["Greeting"])
+
+  #  expect(RUNNERS["context_nested"].root.contexts.first.contexts.map &.description)
+  #    .to eq(["Greeting when name is specified"])
+
+  #  expect(RUNNERS["context_nested"].root.contexts.first.contexts.first.contexts.map &.description)
+  #    .to eq(["Greeting when name is specified when name is invalid"])
+  #end
+end
+
 #Spec2.describe "#it" do
 #  with_runner("example") do
 #    describe "a thing" do

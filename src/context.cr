@@ -3,6 +3,7 @@ module Spec2
     extend Matchers
 
     macro it(what, file = __FILE__, line = __LINE__, &block)
+      {% p "example=#{what}" %}
       instance.examples << ::Spec2::Example.new(self, {{what}}, {{file}}, {{line}}) {{block}}
     end
 
@@ -35,7 +36,7 @@ module Spec2
     end
 
     def self.instance
-      @@_instance ||= new
+      ContextRegistry.instance_of(self)
     end
 
     def self.expect(actual)
@@ -70,4 +71,21 @@ module Spec2
       1
     end
   end
+
+  class DumbContextSubclass < Context
+  end
+
+  class ContextRegistry
+    @@contexts = {Context => Context.new, DumbContextSubclass => DumbContextSubclass.new}
+
+    def self.clear
+      @@contexts.clear
+    end
+
+    def self.instance_of(klass)
+      @@contexts[klass] ||= klass.new
+    end
+  end
+
+  ContextRegistry.clear
 end
