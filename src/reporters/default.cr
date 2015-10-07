@@ -11,20 +11,21 @@ module Spec2
 
       def example_started(example)
         @count += 1
+        print example.description + ".. "
       end
 
       def example_succeeded(example)
-        print "."
+        puts "OK"
       end
 
       def example_failed(example, exception)
         @errors << exception
-        print "F"
+        puts "F"
       end
 
       def example_errored(example, exception)
         @errors << exception
-        print "E"
+        puts "E"
       end
 
       def report

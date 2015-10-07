@@ -4,7 +4,7 @@ class Greeting; end
 
 Spec2.describe "#describe" do
   with_runner("describe_string") do
-    describe "some string here" do
+    Spec2.describe "some string here" do
     end
   end
 
@@ -13,38 +13,38 @@ Spec2.describe "#describe" do
       .to eq(["some string here"])
   end
 
-  #with_runner("describe_class") do
-  #  describe Greeting do
-  #  end
-  #end
+  with_runner("describe_class") do
+    Spec2.describe Greeting do
+    end
+  end
 
-  #it "describes some class" do
-  #  expect(RUNNERS["describe_class"].contexts.map &.description)
-  #    .to eq(["Greeting"])
-  #end
+  it "describes some class" do
+    expect(RUNNERS["describe_class"].root.contexts.map &.description)
+      .to eq(["Greeting"])
+  end
 
-  #with_runner("describe_nested") do
-  #  describe Greeting do
-  #    describe "#greet" do
-  #    end
+  with_runner("describe_nested") do
+    Spec2.describe Greeting do
+      describe "#greet" do
+      end
 
-  #    describe "#stuff" do
-  #      describe "more stuff" do
-  #      end
-  #    end
-  #  end
-  #end
+      describe "#stuff" do
+        describe "more stuff" do
+        end
+      end
+    end
+  end
 
-  #it "should be possible to use nested describe" do
-  #  expect(RUNNERS["describe_nested"].contexts.map &.description)
-  #    .to eq(["Greeting"])
+  it "should be possible to use nested describe" do
+    expect(RUNNERS["describe_nested"].root.contexts.map &.description)
+      .to eq(["Greeting"])
 
-  #  expect(RUNNERS["describe_nested"].contexts.first.contexts.map &.description)
-  #    .to eq(["Greeting #greet", "Greeting #stuff"])
+    expect(RUNNERS["describe_nested"].root.contexts.first.contexts.map &.description)
+      .to eq(["Greeting #greet", "Greeting #stuff"])
 
-  #  expect(RUNNERS["describe_nested"].contexts.first.contexts.last.contexts.map &.description)
-  #    .to eq(["Greeting #stuff more stuff"])
-  #end
+    expect(RUNNERS["describe_nested"].root.contexts.first.contexts.last.contexts.map &.description)
+      .to eq(["Greeting #stuff more stuff"])
+  end
 end
 
 #Spec2.describe "#context" do

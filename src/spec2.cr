@@ -15,6 +15,8 @@ module Spec2
     "parent" => [::Spec2::Context] of Class,
   }
 
+  CONTEXT_COUNTER = [] of Int32
+
   @@runner = Runner.new(Context.instance)
 
   def runner
@@ -31,13 +33,14 @@ module Spec2
   end
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
-    {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize %}
+    {% CONTEXT_COUNTER << 0 %}
+    {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize + "_#{CONTEXT_COUNTER.size}" %}
 
     {% parent = META["current"][-1] %}
     class Spec2__{{label.id}} < {{parent}}
       {% old_parent = META["parent"][-1] %}
       {% META["parent"] << parent %}
-      {% META["current"] << "Spec2__#{label.id.stringify}".id %}
+      {% META["current"] << "Spec2__#{label.id}".id %}
 
       def what
         {{what}}
@@ -55,10 +58,13 @@ module Spec2
         {{line}}
       end
 
-      {{block.body}}
+      macro __spec2__restore_meta__
+        \{% ::Spec2::META["current"] << {{META["parent"][-1]}} %}
+        \{% ::Spec2::META["parent"] << {{old_parent}} %}
+      end
 
-      {% META["current"] << META["parent"][-1] %}
-      {% META["parent"] << old_parent %}
+      {{block.body}}
+      __spec2__restore_meta__
     end
 
     {{parent}}.instance.contexts << Spec2__{{label.id}}.instance
