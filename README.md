@@ -2,6 +2,24 @@
 
 Enhanced `spec` testing library for [Crystal](http://crystal-lang.org/).
 
+## Example
+
+```crystal
+Spec2.describe Greeting do
+  subject { Greeting.new }
+
+  describe "#greet" do
+    context "when name is world"
+      let(name) { "world" }
+
+      it "greets the world" do
+        expect(subject.greet(name)).to eq("Hello, world")
+      end
+    end
+  end
+end
+```
+
 ## Installation
 
 Add it to `Projectfile`
@@ -37,20 +55,6 @@ end
 
 ```crystal
 require "spec2"
-
-Spec2.describe Greeting do
-  subject { Greeting.new }
-
-  describe "#greet" do
-    context "when name is world"
-      let(name) { "world" }
-
-      it "greets the world" do
-        expect(subject.greet(name)).to eq("Hello, world")
-      end
-    end
-  end
-end
 ```
 
 ### Top-level describe
