@@ -2,6 +2,8 @@ require "./spec_helper"
 
 class Greeting; end
 
+runner_events = [] of Symbol
+
 Spec2.describe "#describe" do
   with_runner("describe_string") do
     Spec2.describe "some string here" do
@@ -197,80 +199,79 @@ Spec2.describe "#it" do
   end
 end
 
-#Spec2.describe "#before" do
-#  let(events) { [] of Symbol }
-#
-#  with_runner("before") do
-#    describe "a thing" do
-#      before { events << :before_a }
-#
-#      it "does something" do
-#        events << :example_a
-#      end
-#
-#      before { events << :before_b }
-#
-#      context "when something hapenned" do
-#        before { events << :nested_before }
-#        it "does something else" do
-#          events << :example_b
-#        end
-#      end
-#
-#      it "does something different" do
-#        events << :example_c
-#      end
-#
-#      before { events << :before_c }
-#
-#      it "does nothing" do
-#        events << :example_d
-#      end
-#    end
-#  end
-#
-#  it "runs before any example" do
-#    RUNNERS["before"].run
-#
-#    expect(events).to eq([
-#      :before_a, :before_b, :before_c,
-#      :example_a,
-#
-#      :before_a, :before_b, :before_c,
-#      :example_c,
-#
-#      :before_a, :before_b, :before_c,
-#      :example_d,
-#
-#      :before_a, :before_b, :before_c, :nested_before,
-#      :example_b,
-#    ])
-#  end
-#
-#  describe "inheritance from parent context" do
-#    let(events) { [] of Symbol }
-#    before { events << :success }
-#
-#    context "in inner context" do
-#      it "is still evaluated" do
-#        expect(events).to eq([:success, :more_success])
-#      end
-#
-#      before { events << :more_success }
-#
-#      context "in deeper context" do
-#        it "is still evaluated" do
-#          expect(events).to eq([:success, :more_success])
-#        end
-#      end
-#    end
-#
-#    it "is not evaluated in parent context" do
-#      expect(events).to eq([:success])
-#    end
-#  end
-#end
-#
+Spec2.describe "#before" do
+  with_runner("before") do
+    describe "a thing" do
+      before { runner_events << :before_a }
+
+      it "does something" do
+        runner_events << :example_a
+      end
+
+      before { runner_events << :before_b }
+
+      context "when something hapenned" do
+        before { runner_events << :nested_before }
+        it "does something else" do
+          runner_events << :example_b
+        end
+      end
+
+      it "does something different" do
+        runner_events << :example_c
+      end
+
+      before { runner_events << :before_c }
+
+      it "does nothing" do
+        runner_events << :example_d
+      end
+    end
+  end
+
+  it "runs before any example" do
+    runner_events = [] of Symbol
+    RUNNERS["before"].run
+
+    expect(runner_events).to eq([
+      :before_a, :before_b, :before_c,
+      :example_a,
+
+      :before_a, :before_b, :before_c,
+      :example_c,
+
+      :before_a, :before_b, :before_c,
+      :example_d,
+
+      :before_a, :before_b, :before_c, :nested_before,
+      :example_b,
+    ])
+  end
+
+  describe "inheritance from parent context" do
+    let(events) { [] of Symbol }
+    before { events << :success }
+
+    context "in inner context" do
+      it "is still evaluated" do
+        expect(events).to eq([:success, :more_success])
+      end
+
+      before { events << :more_success }
+
+      context "in deeper context" do
+        it "is still evaluated" do
+          expect(events).to eq([:success, :more_success])
+        end
+      end
+    end
+
+    it "is not evaluated in parent context" do
+      expect(events).to eq([:success])
+    end
+  end
+end
+
 #Spec2.describe "#after" do
 #  with_runner("after") do
 #    describe "a thing" do

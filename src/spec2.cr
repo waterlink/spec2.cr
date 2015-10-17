@@ -68,6 +68,7 @@ module Spec2
     end
 
     {{parent}}.instance.contexts << Spec2__{{label.id}}.instance
+    ::Spec2::ContextRegistry.register_parent(Spec2__{{label.id}}, {{parent}})
   end
 end
 

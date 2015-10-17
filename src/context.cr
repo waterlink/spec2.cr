@@ -14,10 +14,12 @@ module Spec2
       describe({{what}}, {{file}}, {{line}}) {{block}}
     end
 
-    macro before(&block)
+    def self.before(&block)
+      instance.before(&block)
     end
 
-    macro after(&block)
+    def self.after(&block)
+      instance.after(&block)
     end
 
     macro let(decl, &block)
@@ -30,7 +32,7 @@ module Spec2
       end
 
       def self.{{decl.id}}
-        instance.{{decl.id}}
+        (instance as self).{{decl.id}}
       end
     end
 
@@ -38,8 +40,46 @@ module Spec2
       ContextRegistry.instance_of(self)
     end
 
+    def self.parent
+      ContextRegistry.parent_of(self)
+    end
+
     def self.expect(actual)
       Expectation.new(actual)
+    end
+
+    def before(&block)
+      _before_hooks << block
+    end
+
+    def after(&block)
+      _after_hooks << block
+    end
+
+    def before_hooks
+      parent_before_hooks + _before_hooks
+    end
+
+    def after_hooks
+      parent_after_hooks + _after_hooks
+    end
+
+    def parent_before_hooks
+      return [] of (->) unless parent = self.class.parent
+      parent.instance.before_hooks
+    end
+
+    def parent_after_hooks
+      return [] of (->) unless parent = self.class.parent
+      parent.instance.after_hooks
+    end
+
+    def _before_hooks
+      @_before_hooks ||= [] of ->
+    end
+
+    def _after_hooks
+      @_after_hooks ||= [] of ->
     end
 
     def examples
@@ -76,13 +116,23 @@ module Spec2
 
   class ContextRegistry
     @@contexts = {Context => Context.new, DumbContextSubclass => DumbContextSubclass.new}
+    @@parents = {Context => Context, DumbContextSubclass => DumbContextSubclass}
 
     def self.clear
       @@contexts.clear
+      @@parents.clear
     end
 
     def self.instance_of(klass)
       @@contexts[klass] ||= klass.new
+    end
+
+    def self.register_parent(klass, parent)
+      @@parents[klass] = parent
+    end
+
+    def self.parent_of(klass)
+      @@parents[klass]?
     end
   end
 

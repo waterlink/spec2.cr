@@ -17,7 +17,9 @@ module Spec2
       context.examples.each do |example|
         begin
           reporter.example_started(example)
+          context.before_hooks.each(&.call)
           example.call
+          context.after_hooks.each(&.call)
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
           reporter.example_failed(example, e.with_example(example))

@@ -12,11 +12,11 @@ module Spec2
       end
 
       def failure_message
-        "Expected #{actual.inspect} to be equal to #{expected.inspect}"
+        "Expected to be equal:\n\t\tExpected:\t #{expected.inspect}\n\t\tActual:\t\t #{actual.inspect}\n"
       end
 
       def failure_message_when_negated
-        "Expected #{actual.inspect} to be not equal to #{expected.inspect}"
+        "Expected not to be equal:\n\t\tExpected;\t #{expected.inspect}\n\t\tActual:\t\t #{actual.inspect}\n"
       end
     end
 
