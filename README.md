@@ -101,8 +101,8 @@ Full fledged example:
 
 ```crystal
 describe Greeting do
-  subject(greeting :: Greeting) { Greeting.new(greeting_exclamation) }
-  subject!(thing :: Int) { puts "=== subject with bang ===" }
+  subject(greeting) { Greeting.new(greeting_exclamation) }
+  subject!(thing) { puts "=== subject with bang ===" }
 
   let(greeting_exclamation) { "hello" }
   let(name) { "world" }
@@ -118,7 +118,7 @@ describe Greeting do
   end
 
   describe "#for" do
-    subject(greeting_string :: String) { greeting.for(name) }
+    subject(greeting_string) { greeting.for(name) }
 
     it "greets provided person" do
       expect(greeting_string).to eq("hello, world")
