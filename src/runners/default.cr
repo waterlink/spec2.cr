@@ -7,12 +7,12 @@ module Spec2
         @failed
       end
 
-      def run_context(reporter, context)
+      def run_context(reporter, order, context)
         old_context = current_context
         @current_context = context
         reporter.context_started(context)
 
-        context.examples.each do |example|
+        order.order(context.examples).each do |example|
           begin
             reporter.example_started(example)
             context.run_before_hooks(context)
@@ -32,8 +32,8 @@ module Spec2
           end
         end
 
-        context.contexts.each do |nested_context|
-          run_context(reporter, nested_context)
+        order.order(context.contexts).each do |nested_context|
+          run_context(reporter, order, nested_context)
         end
       ensure
         @current_context = old_context

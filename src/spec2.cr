@@ -8,6 +8,8 @@ require "./high_runner"
 require "./runners/*"
 require "./reporter"
 require "./reporters/*"
+require "./order"
+require "./orders/*"
 
 module Spec2
   extend self
@@ -28,8 +30,13 @@ module Spec2
   def configure_high_runner(@@high_runner)
   end
 
+  def random_order
+    configure_order(Orders::Random)
+  end
+
   delegate configure_reporter, high_runner
   delegate configure_runner, high_runner
+  delegate configure_order, high_runner
   delegate current_context, high_runner
   delegate exit_code, high_runner
   delegate run, high_runner
@@ -80,6 +87,7 @@ end
 
 Spec2.configure_runner(Spec2::Runners::Default)
 Spec2.configure_reporter(Spec2::Reporters::Default)
+Spec2.configure_order(Spec2::Orders::Default)
 
 at_exit do
   Spec2.run
