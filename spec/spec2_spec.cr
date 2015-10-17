@@ -63,140 +63,140 @@ Spec2.describe "#context" do
       .to eq(["Greeting when name is specified"])
   end
 
-  #with_runner("context_nested") do
-  #  describe Greeting do
-  #    context "when name is specified" do
-  #      context "when name is invalid" do
-  #      end
-  #    end
-  #  end
-  #end
+  with_runner("context_nested") do
+    describe Greeting do
+      context "when name is specified" do
+        context "when name is invalid" do
+        end
+      end
+    end
+  end
 
-  #it "allows nesting" do
-  #  expect(RUNNERS["context_nested"].root.contexts.map &.description)
-  #    .to eq(["Greeting"])
+  it "allows nesting" do
+    expect(RUNNERS["context_nested"].root.contexts.map &.description)
+      .to eq(["Greeting"])
 
-  #  expect(RUNNERS["context_nested"].root.contexts.first.contexts.map &.description)
-  #    .to eq(["Greeting when name is specified"])
+    expect(RUNNERS["context_nested"].root.contexts.first.contexts.map &.description)
+      .to eq(["Greeting when name is specified"])
 
-  #  expect(RUNNERS["context_nested"].root.contexts.first.contexts.first.contexts.map &.description)
-  #    .to eq(["Greeting when name is specified when name is invalid"])
-  #end
+    expect(RUNNERS["context_nested"].root.contexts.first.contexts.first.contexts.map &.description)
+      .to eq(["Greeting when name is specified when name is invalid"])
+  end
 end
 
-#Spec2.describe "#it" do
-#  with_runner("example") do
-#    describe "a thing" do
-#      it "does something" do
-#        expect(2 + 2).to eq(4)
-#      end
-#    end
-#  end
-#
-#  it "defines an example" do
-#    expect(RUNNERS["example"].contexts.first.examples.map &.example.description)
-#      .to eq(["a thing does something"])
-#  end
-#
-#  with_runner("example_nested") do
-#    describe "a thing" do
-#      context "when moon is full" do
-#        it "does something else" do
-#          expect(2 + 2).to eq(5)
-#        end
-#      end
-#    end
-#  end
-#
-#  context "when is in nested context" do
-#    it "has proper description" do
-#      expect(RUNNERS["example_nested"].contexts.first.contexts.first.examples.map &.example.description)
-#        .to eq(["a thing when moon is full does something else"])
-#    end
-#  end
-#
-#  context "when run" do
-#    with_runner("example_run") do
-#      describe "a thing" do
-#        it "does something" do
-#          expect(2 + 2).to eq(4)
-#        end
-#      end
-#    end
-#
-#    it "sends proper events to reporter" do
-#      RUNNERS["example_run"].run
-#
-#      received = TestReporter.new.received
-#      expect(received.size).to eq(3)
-#
-#      expect(received[0].event).to eq(:example_started)
-#      expect(received[0].example.not_nil!.description).to eq("a thing does something")
-#
-#      expect(received[1].event).to eq(:example_succeeded)
-#      expect(received[1].example.not_nil!.description).to eq("a thing does something")
-#
-#      expect(received[2].event).to eq(:report)
-#    end
-#
-#    context "when failed" do
-#      with_runner("example_failed") do
-#        describe "a thing" do
-#          context "when moon is full" do
-#            it "does something else" do
-#              expect(2 + 2).to eq(5)
-#            end
-#          end
-#        end
-#      end
-#
-#      it "sends additionally :example_failed event to reporter" do
-#        RUNNERS["example_failed"].run
-#
-#        received = TestReporter.new.received
-#        expect(received.size).to eq(3)
-#
-#        expect(received[0].event).to eq(:example_started)
-#        expect(received[0].example.not_nil!.description).to eq("a thing when moon is full does something else")
-#
-#        expect(received[1].event).to eq(:example_failed)
-#        expect(received[1].example.not_nil!.description).to eq("a thing when moon is full does something else")
-#        expect(received[1].exception.not_nil!.message).to eq("Expected 4 to be equal to 5")
-#
-#        expect(received[2].event).to eq(:report)
-#      end
-#    end
-#
-#    context "when errored" do
-#      with_runner("example_errored") do
-#        describe "a thing" do
-#          context "when moon is full" do
-#            it "fails" do
-#              raise Exception.new("Unable to do stuff")
-#            end
-#          end
-#        end
-#      end
-#
-#      it "sends additionally :example_failed event to reporter" do
-#        RUNNERS["example_errored"].run
-#
-#        received = TestReporter.new.received
-#        expect(received.size).to eq(3)
-#
-#        expect(received[0].event).to eq(:example_started)
-#        expect(received[0].example.not_nil!.description).to eq("a thing when moon is full fails")
-#
-#        expect(received[1].event).to eq(:example_errored)
-#        expect(received[1].example.not_nil!.description).to eq("a thing when moon is full fails")
-#        expect(received[1].exception.not_nil!.message).to eq("Unable to do stuff")
-#
-#        expect(received[2].event).to eq(:report)
-#      end
-#    end
-#  end
-#end
-#
+Spec2.describe "#it" do
+  with_runner("example") do
+    describe "a thing" do
+      it "does something" do
+        expect(2 + 2).to eq(4)
+      end
+    end
+  end
+
+  it "defines an example" do
+    expect(RUNNERS["example"].root.contexts.first.examples.map &.description)
+      .to eq(["a thing does something"])
+  end
+
+  with_runner("example_nested") do
+    describe "a thing" do
+      context "when moon is full" do
+        it "does something else" do
+          expect(2 + 2).to eq(5)
+        end
+      end
+    end
+  end
+
+  context "when is in nested context" do
+    it "has proper description" do
+      expect(RUNNERS["example_nested"].root.contexts.first.contexts.first.examples.map &.description)
+        .to eq(["a thing when moon is full does something else"])
+    end
+  end
+
+  context "when run" do
+    with_runner("example_run") do
+      describe "a thing" do
+        it "does something" do
+          expect(2 + 2).to eq(4)
+        end
+      end
+    end
+
+    it "sends proper events to reporter" do
+      RUNNERS["example_run"].run
+
+      received = TestReporter.new.received
+      expect(received.size).to eq(3)
+
+      expect(received[0].event).to eq(:example_started)
+      expect(received[0].example.not_nil!.description).to eq("a thing does something")
+
+      expect(received[1].event).to eq(:example_succeeded)
+      expect(received[1].example.not_nil!.description).to eq("a thing does something")
+
+      expect(received[2].event).to eq(:report)
+    end
+
+    context "when failed" do
+      with_runner("example_failed") do
+        describe "a thing" do
+          context "when moon is full" do
+            it "does something else" do
+              expect(2 + 2).to eq(5)
+            end
+          end
+        end
+      end
+
+      it "sends additionally :example_failed event to reporter" do
+        RUNNERS["example_failed"].run
+
+        received = TestReporter.new.received
+        expect(received.size).to eq(3)
+
+        expect(received[0].event).to eq(:example_started)
+        expect(received[0].example.not_nil!.description).to eq("a thing when moon is full does something else")
+
+        expect(received[1].event).to eq(:example_failed)
+        expect(received[1].example.not_nil!.description).to eq("a thing when moon is full does something else")
+        expect(received[1].exception.not_nil!.message).to eq("Expected 4 to be equal to 5")
+
+        expect(received[2].event).to eq(:report)
+      end
+    end
+
+    context "when errored" do
+      with_runner("example_errored") do
+        describe "a thing" do
+          context "when moon is full" do
+            it "fails" do
+              raise Exception.new("Unable to do stuff")
+            end
+          end
+        end
+      end
+
+      it "sends additionally :example_failed event to reporter" do
+        RUNNERS["example_errored"].run
+
+        received = TestReporter.new.received
+        expect(received.size).to eq(3)
+
+        expect(received[0].event).to eq(:example_started)
+        expect(received[0].example.not_nil!.description).to eq("a thing when moon is full fails")
+
+        expect(received[1].event).to eq(:example_errored)
+        expect(received[1].example.not_nil!.description).to eq("a thing when moon is full fails")
+        expect(received[1].exception.not_nil!.message).to eq("Unable to do stuff")
+
+        expect(received[2].event).to eq(:report)
+      end
+    end
+  end
+end
+
 #Spec2.describe "#before" do
 #  let(events) { [] of Symbol }
 #

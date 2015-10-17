@@ -3,7 +3,6 @@ module Spec2
     extend Matchers
 
     macro it(what, file = __FILE__, line = __LINE__, &block)
-      {% p "example=#{what}" %}
       instance.examples << ::Spec2::Example.new(self, {{what}}, {{file}}, {{line}}) {{block}}
     end
 

@@ -33,7 +33,6 @@ module Spec2
   end
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
-    {% pp what %}
     {% CONTEXT_COUNTER << 0 %}
     {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize + "_#{CONTEXT_COUNTER.size}" %}
 
