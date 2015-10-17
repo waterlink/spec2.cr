@@ -47,6 +47,8 @@ end
   configure it.
 - [x] Proper `Runner` protocol + built-in implementations + ability to
   configure it.
+- [x] Proper `Order` protocol + built-in implementations + ability to configure
+  it.
 - [ ] Proper `Matcher` protocol + necessary built-in matchers + ability to
   register them.
 - [ ] Ability to enable `should` syntax for legacy codebases.
@@ -93,16 +95,25 @@ enable `#should` on `Object`:
 Spec2.enable_should_on_object
 ```
 
-### Random order runner
+### Random order
 
 ```crystal
 Spec2.random_order
 
 # this is what happens under the hood
-Spec2.configure_runner(Spec2::RandomRunner)
+Spec2.configure_order(Spec2::Orders::Random)
 ```
 
-To configure your own custom runner you can use:
+To configure your own custom order you can use:
+
+```crystal
+Spec2.configure_order(MyOrder)
+```
+
+Class `MyOrder` should implement `Order` protocol ([see it here](src/order.cr)).
+See also [a random order implementation](src/orders/random.cr).
+
+### Configuring custom Runner
 
 ```crystal
 Spec2.configure_runner(MyRunner)

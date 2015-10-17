@@ -12,4 +12,7 @@ module Spec2
 
   class RunnerIsNotConfigured < Exception
   end
+
+  class OrderIsNotConfigured < Exception
+  end
 end
