@@ -73,7 +73,7 @@ If you have test suite written for `Spec` and you don't want to prefix each
 top-level describe with `Spec2.`, you can just include `Spec::Macros` globally:
 
 ```crystal
-include Spec2::Macros
+include Spec2::GlobalDSL
 
 # and then:
 describe Greeting do
@@ -88,10 +88,9 @@ expect(greeting.for("john")).to eq("hello, john")
 ```
 
 If you have big codebase that runs on `Spec`, you can use this to
-enable `#should` on `Object`:
+enable `#should` and `#should_not` on `Object`:
 
 ```crystal
-# TODO
 Spec2.enable_should_on_object
 ```
 

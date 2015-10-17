@@ -10,6 +10,8 @@ require "./reporter"
 require "./reporters/*"
 require "./order"
 require "./orders/*"
+require "./should"
+require "./global_dsl"
 
 module Spec2
   extend self
