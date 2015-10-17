@@ -24,10 +24,11 @@ end
 
 Add it to `shard.yml`
 
-```crystal
-deps do
-  github "waterlink/spec2.cr"
-end
+```yml
+dependencies:
+  spec2:
+    github: waterlink/spec2.cr
+    branch: master
 ```
 
 ## Goals
