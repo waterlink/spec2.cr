@@ -9,4 +9,7 @@ module Spec2
 
   class ReporterIsNotConfigured < Exception
   end
+
+  class RunnerIsNotConfigured < Exception
+  end
 end

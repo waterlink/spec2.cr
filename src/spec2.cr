@@ -4,6 +4,8 @@ require "./expectation"
 require "./example"
 require "./context"
 require "./runner"
+require "./high_runner"
+require "./runners/*"
 require "./reporter"
 require "./reporters/*"
 
@@ -17,24 +19,19 @@ module Spec2
 
   CONTEXT_COUNTER = [] of Int32
 
-  @@runner = Runner.new(Context.instance)
+  @@high_runner = HighRunner.new(Context.instance)
 
-  def runner
-    @@runner
+  def high_runner
+    @@high_runner
   end
 
-  def configure_runner(@@runner)
+  def configure_high_runner(@@high_runner)
   end
 
-  delegate configure_reporter, runner
-
-  def run
-    runner.run
-  end
-
-  def current_context
-    runner.current_context
-  end
+  delegate configure_reporter, high_runner
+  delegate configure_runner, high_runner
+  delegate current_context, high_runner
+  delegate run, high_runner
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
     {% CONTEXT_COUNTER << 0 %}
@@ -80,6 +77,7 @@ module Spec2
   end
 end
 
+Spec2.configure_runner(Spec2::Runners::Default)
 Spec2.configure_reporter(Spec2::Reporters::Default)
 
 at_exit do

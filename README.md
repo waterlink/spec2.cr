@@ -45,7 +45,7 @@ end
 - [x] Allow nested `describe` and `context`.
 - [x] Proper `Reporter` protocol + built-in implementations + ability to
   configure it.
-- [ ] Proper `Runner` protocol + built-in implementations + ability to
+- [x] Proper `Runner` protocol + built-in implementations + ability to
   configure it.
 - [ ] Proper `Matcher` protocol + necessary built-in matchers + ability to
   register them.
@@ -99,9 +99,17 @@ Spec2.enable_should_on_object
 Spec2.random_order
 
 # this is what happens under the hood
-# TODO
 Spec2.configure_runner(Spec2::RandomRunner)
 ```
+
+To configure your own custom runner you can use:
+
+```crystal
+Spec2.configure_runner(MyRunner)
+```
+
+Class `MyRunner` should implement `Runner` protocol ([see it here](src/runner.cr)).
+See also [a default runner implementation](src/runners/default.cr).
 
 ### Configuring custom Reporter
 
@@ -109,8 +117,8 @@ Spec2.configure_runner(Spec2::RandomRunner)
 Spec2.configure_reporter(MyReporter)
 ```
 
-Class `MyReporter` should implement `Reporter` protocol [here](src/reporter.cr).
-See also [an example implementation](src/reporters/default.cr).
+Class `MyReporter` should implement `Reporter` protocol ([see it here](src/reporter.cr)).
+See also [a default reporter implementation](src/reporters/default.cr).
 
 ### `before`
 
