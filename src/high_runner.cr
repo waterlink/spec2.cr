@@ -1,8 +1,9 @@
 module Spec2
   class HighRunner
-    getter reporter, runner, root
+    getter reporter, runner, root, exit_code
     getter! current_runner
     def initialize(@root)
+      @exit_code = 0
     end
 
     def contexts
@@ -13,6 +14,9 @@ module Spec2
     end
 
     def configure_runner(@runner)
+    end
+
+    def want_exit(@exit_code)
     end
 
     def run
@@ -35,6 +39,8 @@ module Spec2
 
       current_runner.run_context(reporter, root)
       reporter.report
+
+      want_exit(1) if current_runner.failed?
     end
 
     delegate current_context, current_runner
