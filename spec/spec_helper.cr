@@ -1,6 +1,7 @@
 require "../src/spec2"
 
 Spec2.random_order
+Spec2.doc
 
 TestReporter = Spec2::Reporters::SingletonTest.new
 
@@ -30,6 +31,7 @@ macro with_runner(name, &block)
   %test_runner.configure_reporter(TestReporter)
   %test_runner.configure_runner(::Spec2::Runners::Default)
   %test_runner.configure_order(::Spec2::Orders::Default)
+  %test_runner.configure_output(::Spec2::Outputs::Default)
   TestReporter.reset
   Spec2.configure_high_runner(%test_runner)
 

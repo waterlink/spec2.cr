@@ -36,6 +36,7 @@ module Spec2
           run_context(reporter, order, nested_context)
         end
       ensure
+        reporter.context_finished(context)
         @current_context = old_context
       end
     end

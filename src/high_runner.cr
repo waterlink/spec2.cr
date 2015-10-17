@@ -1,6 +1,6 @@
 module Spec2
   class HighRunner
-    getter reporter, runner, order, root, exit_code
+    getter reporter, runner, order, output, root, exit_code
     getter! current_runner
     def initialize(@root)
       @exit_code = 0
@@ -17,6 +17,9 @@ module Spec2
     end
 
     def configure_order(@order)
+    end
+
+    def configure_output(@output)
     end
 
     def want_exit(@exit_code)
@@ -44,9 +47,19 @@ module Spec2
         )
       end
 
+      output_class = self.output
+      unless output_class
+        raise OutputIsNotConfigured.new(
+          "Please configure output with Spec2.configure_output(output)",
+        )
+      end
+
       reporter = reporter_class.new
       @current_runner = runner_class.new
       order = order_class.new
+      output = output_class.new
+
+      reporter.configure_output(output)
 
       current_runner.run_context(reporter, order, root)
       reporter.report

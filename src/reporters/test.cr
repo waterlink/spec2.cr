@@ -12,7 +12,13 @@ module Spec2
         @received = [] of TestEvent
       end
 
+      def configure_output(output)
+      end
+
       def context_started(context)
+      end
+
+      def context_finished(context)
       end
 
       def example_started(example)
