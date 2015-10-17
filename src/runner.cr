@@ -1,53 +1,29 @@
 module Spec2
   class Runner
-    def initialize
-      @contexts = [] of Context
-      @random_order = false
-      @reporter = nil
+    getter reporter, root, current_context
+    def initialize(@root)
+      @current_context = root
     end
 
     def contexts
-      return _contexts.shuffle if random_order?
-      _contexts
+      [root]
     end
 
-    def _contexts
-      @contexts
-    end
-
-    def random_order
-      @random_order = true
-    end
-
-    def random_order?
-      @random_order
-    end
-
-    def configure_reporter(reporter)
-      @reporter = reporter
-    end
-
-    def reporter
-      @reporter
+    def configure_reporter(@reporter)
     end
 
     def run_context(reporter, context)
+      old_context = current_context
+      @current_context = context
       reporter.context_started(context)
 
-      context.examples.each do |high_example|
-        context.reset
-
-        example = high_example.example
-        context.before_hooks.each do |hook|
-          hook.call(example, context)
-        end
-
+      context.examples.each do |example|
         begin
           reporter.example_started(example)
-          high_example.call(context)
-          context.after_hooks.each do |hook|
-            hook.call(example, context)
-          end
+          context.run_before_hooks(context)
+          example.call(context)
+          context.run_after_hooks(context)
+          context.clear_lets
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
           reporter.example_failed(example, e.with_example(example))
@@ -56,14 +32,14 @@ module Spec2
             example,
             ExpectationNotMet.new(e.message, e).with_example(example),
           )
-        ensure
-          context.reset
         end
       end
 
       context.contexts.each do |nested_context|
         run_context(reporter, nested_context)
       end
+    ensure
+      @current_context = old_context
     end
 
     def run
@@ -75,11 +51,7 @@ module Spec2
       end
 
       reporter = reporter_class.new
-
-      contexts.each do |context|
-        run_context(reporter, context)
-      end
-
+      run_context(reporter, root)
       reporter.report
     end
   end

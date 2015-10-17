@@ -2,69 +2,82 @@ require "./matchers/*"
 require "./exceptions"
 require "./expectation"
 require "./example"
-require "./let"
-require "./hook"
 require "./context"
-require "./macro"
+require "./runner"
 require "./reporter"
 require "./reporters/*"
-require "./runner"
 
 module Spec2
-  include GlobalMacros
   extend self
 
-  @@runner = Runner.new
-  @@context = Spec2
-  @@before_hooks = [] of Hook
-  @@after_hooks = [] of Hook
-  @@execution_context = Spec2
+  META = {
+    "current" => [::Spec2::Context] of Class,
+    "parent" => [::Spec2::Context] of Class,
+  }
 
-  def self.runner
+  CONTEXT_COUNTER = [] of Int32
+
+  @@runner = Runner.new(Context.instance)
+
+  def runner
     @@runner
   end
 
-  def self.configure_runner(runner)
-    @@runner = runner
+  def configure_runner(@@runner)
   end
 
-  def self.current_context
-    @@context
-  end
-
-  def self.current_context=(context)
-    @@context = context
-  end
-
-  def self.before_hooks
-    @@before_hooks
-  end
-
-  def self.after_hooks
-    @@after_hooks
-  end
-
-  def self.what
-    nil
-  end
-
-  def self.lets
-    {} of String => LetWrapper
-  end
-
-  def self.execution_context
-    @@execution_context
-  end
-
-  def self.execution_context=(context)
-    @@execution_context = context
-  end
-
-  delegate run, runner
   delegate configure_reporter, runner
-  delegate random_order?, runner
-  delegate random_order, runner
-  delegate _contexts, runner
+
+  def run
+    runner.run
+  end
+
+  def current_context
+    runner.current_context
+  end
+
+  macro describe(what, file = __FILE__, line = __LINE__, &block)
+    {% CONTEXT_COUNTER << 0 %}
+    {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize + "_#{CONTEXT_COUNTER.size}" %}
+
+    {% parent = META["current"][-1] %}
+    class Spec2__{{label.id}} < {{parent}}
+      {% old_parent = META["parent"][-1] %}
+      {% META["parent"] << parent %}
+      {% META["current"] << "Spec2__#{label.id}".id %}
+
+      def what
+        {{what}}
+      end
+
+      def description
+        ({{ parent }}.instance.description + " " + what.to_s).strip
+      end
+
+      def file
+        {{file}}
+      end
+
+      def line
+        {{line}}
+      end
+
+      macro __spec2__restore_meta__
+        \{% ::Spec2::META["current"] << {{META["parent"][-1]}} %}
+        \{% ::Spec2::META["parent"] << {{old_parent}} %}
+      end
+
+      LETS = [] of String
+      BEFORE = [] of ->
+      AFTER = [] of ->
+
+      {{block.body}}
+      __spec2__restore_meta__
+    end
+
+    {{parent}}.instance.contexts << Spec2__{{label.id}}.instance
+    ::Spec2::ContextRegistry.register_parent(Spec2__{{label.id}}, {{parent}})
+  end
 end
 
 Spec2.configure_reporter(Spec2::Reporters::Default)
