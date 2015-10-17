@@ -2,7 +2,7 @@ require "./spec_helper"
 
 class Greeting; end
 
-Spec2.describe "#describe" do
+Spec2.describe "#describe ... { ... }" do
   with_runner("describe_string") do
     Spec2.describe "some string here" do
     end
@@ -47,7 +47,7 @@ Spec2.describe "#describe" do
   end
 end
 
-Spec2.describe "#context" do
+Spec2.describe "#context ... { ... }" do
   with_runner("context") do
     describe Greeting do
       context "when name is specified" do
@@ -84,7 +84,7 @@ Spec2.describe "#context" do
   end
 end
 
-Spec2.describe "#it" do
+Spec2.describe "#it ... { ... }" do
   with_runner("example") do
     describe "a thing" do
       it "does something" do
@@ -197,7 +197,7 @@ Spec2.describe "#it" do
   end
 end
 
-Spec2.describe "#before" do
+Spec2.describe "#before { ... }" do
   with_runner("before") do
     describe "a thing" do
       before { TestEvents.events << :before_a }
@@ -270,7 +270,7 @@ Spec2.describe "#before" do
   end
 end
 
-Spec2.describe "#after" do
+Spec2.describe "#after { ... }" do
   with_runner("after") do
     describe "a thing" do
       after { TestEvents.events << :after_a }
@@ -320,7 +320,7 @@ Spec2.describe "#after" do
   end
 end
 
-Spec2.describe "#let" do
+Spec2.describe "#let { ... }" do
   context "when referenced" do
     let(events) { [] of Symbol }
     let(stuff) { events << :evaluated; "stuff" }
@@ -378,7 +378,7 @@ Spec2.describe "#let" do
   end
 end
 
-Spec2.describe "#let!" do
+Spec2.describe "#let! { ... }" do
   let(events) { [] of Symbol }
   let!(stuff) { events << :evaluated; "stuff" }
 
@@ -396,63 +396,63 @@ Spec2.describe "#let!" do
   end
 end
 
-#Spec2.describe "#subject(type)" do
-#  let(events) { [] of Symbol }
-#  subject(String) { events << :evaluated; "stuff" }
-#
-#  it "has correct value" do
-#    expect(subject).to eq("stuff")
-#  end
-#
-#  context "when referenced" do
-#    it "is evaluated" do
-#      subject
-#      expect(events).to eq([:evaluated])
-#    end
-#
-#    it "is evaluated only once" do
-#      subject
-#      subject
-#      subject
-#      expect(events).to eq([:evaluated])
-#    end
-#  end
-#
-#  context "when not referenced" do
-#    it "is not evaluated" do
-#      expect(events).to eq([] of Symbol)
-#    end
-#  end
-#
-#  context "when re-defined in inner context" do
-#    subject(String) { events << :evaluated_other; "another_stuff" }
-#
-#    it "has correct value" do
-#      expect(subject).to eq("another_stuff")
-#    end
-#
-#    context "when referenced" do
-#      it "is evaluated" do
-#        subject
-#        expect(events).to eq([:evaluated_other])
-#      end
-#
-#      it "is evaluated only once" do
-#        subject
-#        subject
-#        subject
-#        expect(events).to eq([:evaluated_other])
-#      end
-#    end
-#
-#    context "when not referenced" do
-#      it "is not evaluated" do
-#        expect(events).to eq([] of Symbol)
-#      end
-#    end
-#  end
-#end
-#
+Spec2.describe "#subject { ... }" do
+  let(events) { [] of Symbol }
+  subject { events << :evaluated; "stuff" }
+
+  it "has correct value" do
+    expect(subject).to eq("stuff")
+  end
+
+  context "when referenced" do
+    it "is evaluated" do
+      subject
+      expect(events).to eq([:evaluated])
+    end
+
+    it "is evaluated only once" do
+      subject
+      subject
+      subject
+      expect(events).to eq([:evaluated])
+    end
+  end
+
+  context "when not referenced" do
+    it "is not evaluated" do
+      expect(events).to eq([] of Symbol)
+    end
+  end
+
+  context "when re-defined in inner context" do
+    subject { events << :evaluated_other; "another_stuff" }
+
+    it "has correct value" do
+      expect(subject).to eq("another_stuff")
+    end
+
+    context "when referenced" do
+      it "is evaluated" do
+        subject
+        expect(events).to eq([:evaluated_other])
+      end
+
+      it "is evaluated only once" do
+        subject
+        subject
+        subject
+        expect(events).to eq([:evaluated_other])
+      end
+    end
+
+    context "when not referenced" do
+      it "is not evaluated" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+  end
+end
+
 #Spec2.describe "#subject(name)" do
 #  let(events) { [] of Symbol }
 #  subject(stuff) { events << :evaluated; "stuff" }

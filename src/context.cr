@@ -32,6 +32,10 @@ module Spec2
       {% LETS << decl.id.stringify %}
 
       def {{decl.id}}
+        __spec2_let_{{decl.id}}
+      end
+
+      def __spec2_let_{{decl.id}}
         {{decl.id}}! as typeof({{decl.id}}__spec2_typed)
       end
 
@@ -60,6 +64,14 @@ module Spec2
     macro let!(decl, &block)
       let({{decl}}) {{block}}
       before { {{decl.id}} }
+    end
+
+    macro subject(&block)
+      {% if block.is_a?(Nop) %}
+           __spec2_let_subject
+      {% else %}
+           let(subject) {{block}}
+      {% end %}
     end
 
     def self.instance
