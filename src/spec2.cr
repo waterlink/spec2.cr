@@ -32,6 +32,10 @@ module Spec2
     runner.run
   end
 
+  def current_context
+    runner.current_context
+  end
+
   macro describe(what, file = __FILE__, line = __LINE__, &block)
     {% CONTEXT_COUNTER << 0 %}
     {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize + "_#{CONTEXT_COUNTER.size}" %}
@@ -64,6 +68,8 @@ module Spec2
       end
 
       LETS = [] of String
+      BEFORE = [] of ->
+      AFTER = [] of ->
 
       {{block.body}}
       __spec2__restore_meta__

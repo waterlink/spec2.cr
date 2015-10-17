@@ -5,6 +5,16 @@ TestReporter = Spec2::Reporters::SingletonTest.new
 RUNNERS = {} of String => Spec2::Runner
 FAKE_ROOTS = [] of Int32
 
+module TestEvents
+  def self.clear
+    @@events = [] of Symbol
+  end
+
+  def self.events
+    @@events ||= clear
+  end
+end
+
 macro with_runner(name, &block)
   {% FAKE_ROOTS << 0 %}
 

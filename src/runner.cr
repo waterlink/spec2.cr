@@ -1,7 +1,8 @@
 module Spec2
   class Runner
-    getter reporter, root
+    getter reporter, root, current_context
     def initialize(@root)
+      @current_context = root
     end
 
     def contexts
@@ -12,14 +13,16 @@ module Spec2
     end
 
     def run_context(reporter, context)
+      old_context = current_context
+      @current_context = context
       reporter.context_started(context)
 
       context.examples.each do |example|
         begin
           reporter.example_started(example)
-          context.before_hooks.each(&.call)
-          example.call
-          context.after_hooks.each(&.call)
+          context.run_before_hooks(context)
+          example.call(context)
+          context.run_after_hooks(context)
           context.clear_lets
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
@@ -35,6 +38,8 @@ module Spec2
       context.contexts.each do |nested_context|
         run_context(reporter, nested_context)
       end
+    ensure
+      @current_context = old_context
     end
 
     def run

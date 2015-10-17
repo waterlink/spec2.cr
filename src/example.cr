@@ -1,11 +1,11 @@
 module Spec2
   class Example
     getter ctx, what, file, line, block
-    def initialize(@ctx, @what, @file, @line, &@block)
+    def initialize(@ctx, @what, @file, @line, &@block : Context ->)
     end
 
-    def call
-      block.call
+    def call(ctx)
+      block.call(ctx)
     end
 
     def description

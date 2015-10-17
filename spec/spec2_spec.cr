@@ -2,8 +2,6 @@ require "./spec_helper"
 
 class Greeting; end
 
-runner_events = [] of Symbol
-
 Spec2.describe "#describe" do
   with_runner("describe_string") do
     Spec2.describe "some string here" do
@@ -202,38 +200,38 @@ end
 Spec2.describe "#before" do
   with_runner("before") do
     describe "a thing" do
-      before { runner_events << :before_a }
+      before { TestEvents.events << :before_a }
 
       it "does something" do
-        runner_events << :example_a
+        TestEvents.events << :example_a
       end
 
-      before { runner_events << :before_b }
+      before { TestEvents.events << :before_b }
 
       context "when something hapenned" do
-        before { runner_events << :nested_before }
+        before { TestEvents.events << :nested_before }
         it "does something else" do
-          runner_events << :example_b
+          TestEvents.events << :example_b
         end
       end
 
       it "does something different" do
-        runner_events << :example_c
+        TestEvents.events << :example_c
       end
 
-      before { runner_events << :before_c }
+      before { TestEvents.events << :before_c }
 
       it "does nothing" do
-        runner_events << :example_d
+        TestEvents.events << :example_d
       end
     end
   end
 
   it "runs before any example" do
-    runner_events = [] of Symbol
+    TestEvents.clear
     RUNNERS["before"].run
 
-    expect(runner_events).to eq([
+    expect(TestEvents.events).to eq([
       :before_a, :before_b, :before_c,
       :example_a,
 
@@ -275,38 +273,38 @@ end
 Spec2.describe "#after" do
   with_runner("after") do
     describe "a thing" do
-      after { runner_events << :after_a }
+      after { TestEvents.events << :after_a }
 
       it "does something" do
-        runner_events << :example_a
+        TestEvents.events << :example_a
       end
 
-      after { runner_events << :after_b }
+      after { TestEvents.events << :after_b }
 
       context "when something hapenned" do
-        after { runner_events << :nested_after }
+        after { TestEvents.events << :nested_after }
         it "does something else" do
-          runner_events << :example_b
+          TestEvents.events << :example_b
         end
       end
 
       it "does something different" do
-        runner_events << :example_c
+        TestEvents.events << :example_c
       end
 
-      after { runner_events << :after_c }
+      after { TestEvents.events << :after_c }
 
       it "does nothing" do
-        runner_events << :example_d
+        TestEvents.events << :example_d
       end
     end
   end
 
   it "runs after any example" do
-    runner_events = [] of Symbol
+    TestEvents.clear
     RUNNERS["after"].run
 
-    expect(runner_events).to eq([
+    expect(TestEvents.events).to eq([
       :example_a,
       :after_a, :after_b, :after_c,
 
@@ -380,24 +378,24 @@ Spec2.describe "#let" do
   end
 end
 
-#Spec2.describe "#let!" do
-#  let(events) { [] of Symbol }
-#  let!(stuff) { events << :evaluated; "stuff" }
-#
-#  context "when not used" do
-#    it "is evaluated" do
-#      expect(events).to eq([:evaluated])
-#    end
-#  end
-#
-#  context "when used" do
-#    it "is evaluated only once" do
-#      stuff
-#      expect(events).to eq([:evaluated])
-#    end
-#  end
-#end
-#
+Spec2.describe "#let!" do
+  let(events) { [] of Symbol }
+  let!(stuff) { events << :evaluated; "stuff" }
+
+  context "when not used" do
+    it "is evaluated" do
+      expect(events).to eq([:evaluated])
+    end
+  end
+
+  context "when used" do
+    it "is evaluated only once" do
+      stuff
+      expect(events).to eq([:evaluated])
+    end
+  end
+end
+
 #Spec2.describe "#subject(type)" do
 #  let(events) { [] of Symbol }
 #  subject(String) { events << :evaluated; "stuff" }

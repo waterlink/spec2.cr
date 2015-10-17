@@ -2,8 +2,14 @@ module Spec2
   class Context
     extend Matchers
 
+    LETS = [] of String
+    BEFORE = [] of ->
+    AFTER = [] of ->
+
     macro it(what, file = __FILE__, line = __LINE__, &block)
-      instance.examples << ::Spec2::Example.new(self, {{what}}, {{file}}, {{line}}) {{block}}
+      instance.examples << ::Spec2::Example.new(self, {{what}}, {{file}}, {{line}}) do |ctx|
+        (ctx as self).run_hook {{block}}
+      end
     end
 
     macro describe(what, file = __FILE__, line = __LINE__, &block)
@@ -14,34 +20,46 @@ module Spec2
       describe({{what}}, {{file}}, {{line}}) {{block}}
     end
 
-    def self.before(&block)
-      instance.before(&block)
+    macro before(&block)
+      {% BEFORE << block %}
     end
 
-    def self.after(&block)
-      instance.after(&block)
+    macro after(&block)
+      {% AFTER << block %}
     end
 
     macro let(decl, &block)
       {% LETS << decl.id.stringify %}
 
       def {{decl.id}}
-        @_let_{{decl.id}} ||= {{decl.id}}!
+        {{decl.id}}! as typeof({{decl.id}}__spec2_typed)
       end
 
       def {{decl.id}}!
+        (::Spec2.current_context as self).run_hook do
+          {{decl.id}}__spec2_set
+        end
+      end
+
+      def {{decl.id}}__spec2_set
+        @_let_{{decl.id}} ||= {{decl.id}}__spec2_typed
+      end
+
+      def {{decl.id}}__spec2_typed
         {{block.body}}
       end
 
-      def self.{{decl.id}}
-        (instance as self).{{decl.id}}
-      end
-
       def clear_lets
+        super
         {% for name in LETS %}
              @_let_{{name.id}} = nil
         {% end %}
       end
+    end
+
+    macro let!(decl, &block)
+      let({{decl}}) {{block}}
+      before { {{decl.id}} }
     end
 
     def self.instance
@@ -56,38 +74,34 @@ module Spec2
       Expectation.new(actual)
     end
 
-    def before(&block)
-      _before_hooks << block
+    macro def run_before_hooks(ctx) : Nil
+      parent_run_before_hooks(ctx)
+      {% for hook in BEFORE %}
+           ctx.run_hook {{hook}}
+      {% end %}
+      nil
     end
 
-    def after(&block)
-      _after_hooks << block
+    macro def run_after_hooks(ctx) : Nil
+      parent_run_after_hooks(ctx)
+      {% for hook in AFTER %}
+           ctx.run_hook {{hook}}
+      {% end %}
+      nil
     end
 
-    def before_hooks
-      parent_before_hooks + _before_hooks
+    def parent_run_before_hooks(ctx)
+      return unless parent = self.class.parent
+      parent.instance.run_before_hooks(ctx)
     end
 
-    def after_hooks
-      parent_after_hooks + _after_hooks
+    def parent_run_after_hooks(ctx)
+      return unless parent = self.class.parent
+      parent.instance.run_after_hooks(ctx)
     end
 
-    def parent_before_hooks
-      return [] of (->) unless parent = self.class.parent
-      parent.instance.before_hooks
-    end
-
-    def parent_after_hooks
-      return [] of (->) unless parent = self.class.parent
-      parent.instance.after_hooks
-    end
-
-    def _before_hooks
-      @_before_hooks ||= [] of ->
-    end
-
-    def _after_hooks
-      @_after_hooks ||= [] of ->
+    def run_hook
+      with self yield
     end
 
     def examples
