@@ -272,56 +272,56 @@ Spec2.describe "#before" do
   end
 end
 
-#Spec2.describe "#after" do
-#  with_runner("after") do
-#    describe "a thing" do
-#      after { events << :after_a }
-#
-#      it "does something" do
-#        events << :example_a
-#      end
-#
-#      after { events << :after_b }
-#
-#      context "when something hapenned" do
-#        after { events << :nested_after }
-#        it "does something else" do
-#          events << :example_b
-#        end
-#      end
-#
-#      it "does something different" do
-#        events << :example_c
-#      end
-#
-#      after { events << :after_c }
-#
-#      it "does nothing" do
-#        events << :example_d
-#      end
-#    end
-#  end
-#
-#  it "runs after any example" do
-#    events = [] of Symbol
-#    RUNNER["after"].run
-#
-#    expect(events).to eq([
-#      :example_a,
-#      :after_a, :after_b, :after_c,
-#
-#      :example_c,
-#      :after_a, :after_b, :after_c,
-#
-#      :example_d,
-#      :after_a, :after_b, :after_c,
-#
-#      :example_b,
-#      :after_a, :after_b, :after_c, :nested_after,
-#    ])
-#  end
-#end
-#
+Spec2.describe "#after" do
+  with_runner("after") do
+    describe "a thing" do
+      after { runner_events << :after_a }
+
+      it "does something" do
+        runner_events << :example_a
+      end
+
+      after { runner_events << :after_b }
+
+      context "when something hapenned" do
+        after { runner_events << :nested_after }
+        it "does something else" do
+          runner_events << :example_b
+        end
+      end
+
+      it "does something different" do
+        runner_events << :example_c
+      end
+
+      after { runner_events << :after_c }
+
+      it "does nothing" do
+        runner_events << :example_d
+      end
+    end
+  end
+
+  it "runs after any example" do
+    runner_events = [] of Symbol
+    RUNNERS["after"].run
+
+    expect(runner_events).to eq([
+      :example_a,
+      :after_a, :after_b, :after_c,
+
+      :example_c,
+      :after_a, :after_b, :after_c,
+
+      :example_d,
+      :after_a, :after_b, :after_c,
+
+      :example_b,
+      :after_a, :after_b, :after_c, :nested_after,
+    ])
+  end
+end
+
 #Spec2.describe "#let" do
 #  context "when referenced" do
 #    let(events) { [] of Symbol }
