@@ -15,4 +15,7 @@ module Spec2
 
   class OrderIsNotConfigured < Exception
   end
+
+  class OutputIsNotConfigured < Exception
+  end
 end

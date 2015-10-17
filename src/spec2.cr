@@ -1,3 +1,5 @@
+require "colorize"
+
 require "./matchers/*"
 require "./exceptions"
 require "./expectation"
@@ -10,6 +12,8 @@ require "./reporter"
 require "./reporters/*"
 require "./order"
 require "./orders/*"
+require "./output"
+require "./outputs/*"
 require "./should"
 require "./global_dsl"
 
@@ -39,6 +43,7 @@ module Spec2
   delegate configure_reporter, high_runner
   delegate configure_runner, high_runner
   delegate configure_order, high_runner
+  delegate configure_output, high_runner
   delegate current_context, high_runner
   delegate exit_code, high_runner
   delegate run, high_runner
@@ -90,6 +95,7 @@ end
 Spec2.configure_runner(Spec2::Runners::Default)
 Spec2.configure_reporter(Spec2::Reporters::Default)
 Spec2.configure_order(Spec2::Orders::Default)
+Spec2.configure_output(Spec2::Outputs::Default)
 
 at_exit do
   Spec2.run

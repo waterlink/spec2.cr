@@ -44,15 +44,19 @@ dependencies:
 ## Roadmap
 
 - [x] Allow nested `describe` and `context`.
+- [x] Ability to enable `should` syntax for legacy codebases.
 - [x] Proper `Reporter` protocol + built-in implementations + ability to
   configure it.
 - [x] Proper `Runner` protocol + built-in implementations + ability to
   configure it.
 - [x] Proper `Order` protocol + built-in implementations + ability to configure
   it.
+- [x] Proper `Output` protocol + built-in implementations + ability to
+  configure it.
 - [ ] Proper `Matcher` protocol + necessary built-in matchers + ability to
   register them.
-- [ ] Ability to enable `should` syntax for legacy codebases.
+- [ ] Configuration through CLI interface.
+- [ ] Filters.
 
 ## Usage
 
@@ -113,6 +117,42 @@ Spec2.configure_order(MyOrder)
 Class `MyOrder` should implement `Order` protocol ([see it here](src/order.cr)).
 See also [a random order implementation](src/orders/random.cr).
 
+### No color mode
+
+```crystal
+Spec2.nocolor
+
+# this is what happens under the hood
+Spec2.configure_output(Spec2::Outputs::Nocolor)
+```
+
+To configure your own custom output you can use:
+
+```crystal
+Spec2.configure_output(MyOutput)
+```
+
+Class `MyOutput` should implement `Output` protocol ([see it here](src/output.cr)).
+See also [a default colorful output implementation](src/outputs/default.cr).
+
+### Documentation reporter
+
+```crystal
+Spec2.doc
+
+# this is what happens under the hood
+Spec2.configure_reporter(Spec2::Reporters::Doc)
+```
+
+To configure your own custom reporter you can use:
+
+```crystal
+Spec2.configure_reporter(MyReporter)
+```
+
+Class `MyReporter` should implement `Reporter` protocol ([see it here](src/reporter.cr)).
+See also [a default reporter implementation](src/reporters/default.cr).
+
 ### Configuring custom Runner
 
 ```crystal
@@ -121,15 +161,6 @@ Spec2.configure_runner(MyRunner)
 
 Class `MyRunner` should implement `Runner` protocol ([see it here](src/runner.cr)).
 See also [a default runner implementation](src/runners/default.cr).
-
-### Configuring custom Reporter
-
-```crystal
-Spec2.configure_reporter(MyReporter)
-```
-
-Class `MyReporter` should implement `Reporter` protocol ([see it here](src/reporter.cr)).
-See also [a default reporter implementation](src/reporters/default.cr).
 
 ### `before`
 
