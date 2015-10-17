@@ -104,10 +104,10 @@ describe Greeting do
   subject(greeting :: Greeting) { Greeting.new(greeting_exclamation) }
   subject!(thing :: Int) { puts "=== subject with bang ===" }
 
-  let(greeting_exclamation :: String) { "hello" }
-  let(name :: String) { "world" }
+  let(greeting_exclamation) { "hello" }
+  let(name) { "world" }
 
-  let!(something :: Int) { puts "=== let with bang ===" }
+  let!(something) { puts "=== let with bang ===" }
 
   before do
     puts "=== before example ==="
@@ -125,7 +125,7 @@ describe Greeting do
     end
 
     context "when name is john" do
-      let(name :: String) { "john" }
+      let(name) { "john" }
 
       it "greets john" do
         expect(greeting_string).to eq("hello, john")
@@ -133,7 +133,7 @@ describe Greeting do
     end
 
     context "when greeting exclamation is different" do
-      let(greeting_exclamation :: String) { "hallo" }
+      let(greeting_exclamation) { "hallo" }
 
       it "greets world with different exclamation" do
         expect(greeting_string).to eq("hallo, world")
