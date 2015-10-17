@@ -1,6 +1,6 @@
 module Spec2
   module Matchers
-    class Eq
+    class Eq < Matcher
       getter expected
       getter actual
 
@@ -20,8 +20,6 @@ module Spec2
       end
     end
 
-    def eq(expected)
-      Eq.new(expected)
-    end
+    Spec2.register_matcher(eq) { |expected| Eq.new(expected) }
   end
 end

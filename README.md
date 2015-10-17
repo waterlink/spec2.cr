@@ -53,8 +53,8 @@ dependencies:
   it.
 - [x] Proper `Output` protocol + built-in implementations + ability to
   configure it.
-- [ ] Proper `Matcher` protocol + necessary built-in matchers + ability to
-  register them.
+- [x] Proper `Matcher` protocol + ability to register them.
+- [ ] Matcher protocol.
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
 
@@ -252,6 +252,51 @@ subject!(stuff) { Stuff.new }
 
 it "works" do
   expect(stuff.answer).to eq(42)
+end
+```
+
+### Custom matchers
+
+First, define your matcher implementing [this protocol](src/matcher.cr):
+
+```crystal
+class MyMatcher < Spec2::Matcher
+  def initialize(@expected, @stuff)
+  end
+
+  def match(@actual)
+    # return true or false here
+  end
+
+  def failure_message
+    "Expected to be valid #{@stuff.inspect}.
+    Expected: #{@expected.inspect}.
+    Actual:   #{@actual.inspect}."
+  end
+
+  def failure_message_when_negated
+    "Expected to be invalid #{@stuff.inspect}.
+    Expected: #{@expected.inspect}.
+    Actual:   #{@actual.inspect}."
+  end
+end
+```
+
+And then, register shortcut helper method to use your matcher.
+
+```crystal
+Spec2.register_matcher(stuff) do |stuff, expected|
+  MyMatcher.new(expected, stuff)
+end
+```
+
+And use it:
+
+```crystal
+describe "stuff" do
+  it "is valid stuff" do
+    expect(something).to stuff(some_stuff, "expected stuff")
+  end
 end
 ```
 
