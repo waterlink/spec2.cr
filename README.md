@@ -95,9 +95,100 @@ Spec2.configure_reporter(MyReporter)
 Class `MyReporter` should implement `Reporter` protocol [here](src/reporter.cr).
 See also [an example implementation](src/reporters/default.cr).
 
-### `before`, `after`, `let` and others
+### `before`
 
-Full fledged example:
+`before` - register a hook that is run before any example in current and all
+nested contexts.
+
+```crystal
+before { .. do some stuff .. }
+```
+
+### `after`
+
+`after` - register a hook that is run after any successful example in current
+and all nested contexts.
+
+```crystal
+after { .. do some stuff .. }
+```
+
+### `let`
+
+`let(name) { value }` - register a binding of certain `value` to `name`. Lazy:
+provided block will only be evaluated when needed in example and only once per
+example.
+
+```crystal
+let(answer) { 42 }
+
+it "is correct answer" do
+  expect(answer).to eq(42)
+end
+```
+
+### `let!`
+
+`let(name) { value }` - register a binding of certain `value` to `name`. It is
+not lazy: provided block will be evaluated before each example exactly once.
+
+```crystal
+let!(answer) { 42 }
+
+it "is correct answer" do
+  expect(answer).to eq(42)
+end
+```
+
+### `subject`
+
+`subject { value }` - register a subject of your test with provided `value`.
+Lazy.
+
+```crystal
+subject { Stuff.new }
+
+it "works" do
+  expect(subject.answer).to eq(42)
+end
+```
+
+`subject(name) { value }` - registers a named subject of your test with
+provided `value` with provided `name`. Lazy.
+
+```crystal
+subject(stuff) { Stuff.new }
+
+it "works" do
+  expect(stuff.answer).to eq(42)
+end
+```
+
+### `subject!`
+
+`subject! { value }` - register a subject of your test with provided `value`.
+It is not lazy.
+
+```crystal
+subject! { Stuff.new }
+
+it "works" do
+  expect(subject.answer).to eq(42)
+end
+```
+
+`subject!(name) { value }` - registers a named subject of your test with
+provided `value` with provided `name`. It is not lazy.
+
+```crystal
+subject!(stuff) { Stuff.new }
+
+it "works" do
+  expect(stuff.answer).to eq(42)
+end
+```
+
+### Full fledged example:
 
 ```crystal
 describe Greeting do
