@@ -22,7 +22,7 @@ end
 
 ## Installation
 
-Add it to `Projectfile`
+Add it to `shard.yml`
 
 ```crystal
 deps do
