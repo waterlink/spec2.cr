@@ -3,6 +3,10 @@ module Spec2
     class Default < Runner
       getter current_context
 
+      def failed?
+        @failed
+      end
+
       def run_context(reporter, context)
         old_context = current_context
         @current_context = context
@@ -17,8 +21,10 @@ module Spec2
             context.clear_lets
             reporter.example_succeeded(example)
           rescue e : ExpectationNotMet
+            @failed = true
             reporter.example_failed(example, e.with_example(example))
           rescue e
+            @failed = true
             reporter.example_errored(
               example,
               ExpectationNotMet.new(e.message, e).with_example(example),

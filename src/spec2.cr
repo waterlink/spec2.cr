@@ -31,6 +31,7 @@ module Spec2
   delegate configure_reporter, high_runner
   delegate configure_runner, high_runner
   delegate current_context, high_runner
+  delegate exit_code, high_runner
   delegate run, high_runner
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
@@ -82,4 +83,5 @@ Spec2.configure_reporter(Spec2::Reporters::Default)
 
 at_exit do
   Spec2.run
+  exit(Spec2.exit_code)
 end
