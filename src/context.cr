@@ -74,6 +74,10 @@ module Spec2
       {% end %}
     end
 
+    macro subject(decl, &block)
+      let({{decl}}) {{block}}
+    end
+
     def self.instance
       ContextRegistry.instance_of(self)
     end

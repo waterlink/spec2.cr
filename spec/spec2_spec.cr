@@ -320,7 +320,7 @@ Spec2.describe "#after { ... }" do
   end
 end
 
-Spec2.describe "#let { ... }" do
+Spec2.describe "#let(...) { ... }" do
   context "when referenced" do
     let(events) { [] of Symbol }
     let(stuff) { events << :evaluated; "stuff" }
@@ -378,7 +378,7 @@ Spec2.describe "#let { ... }" do
   end
 end
 
-Spec2.describe "#let! { ... }" do
+Spec2.describe "#let!(...) { ... }" do
   let(events) { [] of Symbol }
   let!(stuff) { events << :evaluated; "stuff" }
 
@@ -453,59 +453,59 @@ Spec2.describe "#subject { ... }" do
   end
 end
 
-#Spec2.describe "#subject(name)" do
-#  let(events) { [] of Symbol }
-#  subject(stuff) { events << :evaluated; "stuff" }
-#
-#  it "has correct value" do
-#    expect(stuff).to eq("stuff")
-#  end
-#
-#  context "when referenced" do
-#    it "is evaluated" do
-#      stuff
-#      expect(events).to eq([:evaluated])
-#    end
-#
-#    it "is evaluated only once" do
-#      stuff
-#      stuff
-#      stuff
-#      expect(events).to eq([:evaluated])
-#    end
-#  end
-#
-#  context "when not referenced" do
-#    it "is not evaluated" do
-#      expect(events).to eq([] of Symbol)
-#    end
-#  end
-#
-#  context "when re-defined in inner context" do
-#    subject(stuff) { events << :evaluated_other; "another_stuff" }
-#
-#    it "has correct value" do
-#      expect(stuff).to eq("another_stuff")
-#    end
-#
-#    context "when referenced" do
-#      it "is evaluated" do
-#        stuff
-#        expect(events).to eq([:evaluated_other])
-#      end
-#
-#      it "is evaluated only once" do
-#        stuff
-#        stuff
-#        stuff
-#        expect(events).to eq([:evaluated_other])
-#      end
-#    end
-#
-#    context "when not referenced" do
-#      it "is not evaluated" do
-#        expect(events).to eq([] of Symbol)
-#      end
-#    end
-#  end
-#end
+Spec2.describe "#subject(...) { ... }" do
+  let(events) { [] of Symbol }
+  subject(stuff) { events << :evaluated; "stuff" }
+
+  it "has correct value" do
+    expect(stuff).to eq("stuff")
+  end
+
+  context "when referenced" do
+    it "is evaluated" do
+      stuff
+      expect(events).to eq([:evaluated])
+    end
+
+    it "is evaluated only once" do
+      stuff
+      stuff
+      stuff
+      expect(events).to eq([:evaluated])
+    end
+  end
+
+  context "when not referenced" do
+    it "is not evaluated" do
+      expect(events).to eq([] of Symbol)
+    end
+  end
+
+  context "when re-defined in inner context" do
+    subject(stuff) { events << :evaluated_other; "another_stuff" }
+
+    it "has correct value" do
+      expect(stuff).to eq("another_stuff")
+    end
+
+    context "when referenced" do
+      it "is evaluated" do
+        stuff
+        expect(events).to eq([:evaluated_other])
+      end
+
+      it "is evaluated only once" do
+        stuff
+        stuff
+        stuff
+        expect(events).to eq([:evaluated_other])
+      end
+    end
+
+    context "when not referenced" do
+      it "is not evaluated" do
+        expect(events).to eq([] of Symbol)
+      end
+    end
+  end
+end
