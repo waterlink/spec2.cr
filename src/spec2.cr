@@ -1,5 +1,6 @@
 require "colorize"
 
+require "./matcher"
 require "./matchers/*"
 require "./exceptions"
 require "./expectation"
