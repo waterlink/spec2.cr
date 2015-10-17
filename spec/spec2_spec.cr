@@ -375,6 +375,16 @@ Spec2.describe "#let(...) { ... }" do
         expect(events).to eq([] of Symbol)
       end
     end
+
+    context "when has different type" do
+      let(stuff) { events << :evaluated; 42 }
+
+      it "still works" do
+        expect(stuff).to eq(42)
+        expect(typeof(stuff)).to eq(Int32)
+        expect(events).to eq([:evaluated])
+      end
+    end
   end
 end
 
