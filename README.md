@@ -49,9 +49,8 @@ Spec2.describe MySuperLibrary do
 end
 ```
 
-If you have test suite written for `Spec` and you don't want to put each
-top-level describe in its own module, you can just include `Spec::Macros`
-globally:
+If you have test suite written for `Spec` and you don't want to prefix each
+top-level describe with `Spec2.`, you can just include `Spec::Macros` globally:
 
 ```crystal
 include Spec2::Macros
