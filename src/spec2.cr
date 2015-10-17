@@ -63,6 +63,8 @@ module Spec2
         \{% ::Spec2::META["parent"] << {{old_parent}} %}
       end
 
+      LETS = [] of String
+
       {{block.body}}
       __spec2__restore_meta__
     end

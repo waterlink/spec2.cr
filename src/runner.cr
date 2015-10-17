@@ -20,6 +20,7 @@ module Spec2
           context.before_hooks.each(&.call)
           example.call
           context.after_hooks.each(&.call)
+          context.clear_lets
           reporter.example_succeeded(example)
         rescue e : ExpectationNotMet
           reporter.example_failed(example, e.with_example(example))

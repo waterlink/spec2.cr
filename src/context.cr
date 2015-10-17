@@ -23,8 +23,10 @@ module Spec2
     end
 
     macro let(decl, &block)
+      {% LETS << decl.id.stringify %}
+
       def {{decl.id}}
-        @_{{decl.id}} ||= {{decl.id}}!
+        @_let_{{decl.id}} ||= {{decl.id}}!
       end
 
       def {{decl.id}}!
@@ -33,6 +35,12 @@ module Spec2
 
       def self.{{decl.id}}
         (instance as self).{{decl.id}}
+      end
+
+      def clear_lets
+        {% for name in LETS %}
+             @_let_{{name.id}} = nil
+        {% end %}
       end
     end
 
@@ -88,6 +96,9 @@ module Spec2
 
     def contexts
       @_contexts ||= [] of Context
+    end
+
+    def clear_lets
     end
 
     def description
