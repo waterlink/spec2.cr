@@ -28,7 +28,7 @@ Add it to `shard.yml`
 dependencies:
   spec2:
     github: waterlink/spec2.cr
-    branch: master
+    version: ~> 0.4.0
 ```
 
 ## Goals
