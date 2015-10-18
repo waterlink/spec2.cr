@@ -54,7 +54,7 @@ dependencies:
 - [x] Proper `Output` protocol + built-in implementations + ability to
   configure it.
 - [x] Proper `Matcher` protocol + ability to register them.
-- [ ] Matcher protocol.
+- [ ] Necessary builtin matchers.
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
 
