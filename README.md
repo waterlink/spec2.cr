@@ -65,7 +65,8 @@ end
 ```
 
 If you have test suite written for `Spec` and you don't want to prefix each
-top-level describe with `Spec2.`, you can just include `Spec::Macros` globally:
+top-level describe with `Spec2.`, you can just include `Spec::GlobalDSL`
+globally:
 
 ```crystal
 include Spec2::GlobalDSL
