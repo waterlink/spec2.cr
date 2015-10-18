@@ -10,6 +10,12 @@ class EqualityExample
   end
 end
 
+class Greeting
+  def correct?(word, name, greeting)
+    greeting == "#{word}, #{name}!"
+  end
+end
+
 class ErrorExample < Exception
 end
 
@@ -335,6 +341,145 @@ Spec2.describe Spec2::Matchers do
           Spec2::ExpectationNotMet,
           "Expected to be close:\n        Expected:  42\n        Actual:    42.05\n        Max-delta: 0.01\n        Delta:     0.05"
         )
+      end
+    end
+  end
+
+  describe ".to_be" do
+    describe "< ..." do
+      context "when is less than expected" do
+        it "passes" do
+          expect(42).to_be < 45
+        end
+      end
+
+      context "when is more than expected" do
+        it "fails" do
+          expect {
+            expect(55).to_be < 45
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            "Expected 55 to be < 45",
+          )
+        end
+      end
+
+      context "when is equal expected" do
+        it "fails" do
+          expect {
+            expect(45).to_be < 45
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            "Expected 45 to be < 45",
+          )
+        end
+      end
+    end
+
+    describe ".even?" do
+      context "when is even" do
+        it "passes" do
+          expect(42).to_be .even?
+        end
+      end
+
+      context "when is not even" do
+        it "fails" do
+          expect {
+            expect(45).to_be .even?
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            "Expected 45 to be even?",
+          )
+        end
+      end
+    end
+
+    context "other types" do
+      describe ".correct?(word, name, greeting)" do
+        context "when is correct" do
+          it "passes" do
+            expect(Greeting.new).to_be .correct?("hello", "world", "hello, world!")
+          end
+        end
+
+        context "when is not correct" do
+          it "fails" do
+            expect {
+              expect(Greeting.new).to_be .correct?("hello", "john", "hello, world!")
+            }.to raise_error(
+              Spec2::ExpectationNotMet,
+              match(/Expected #<Greeting:.+> to be correct\? {"hello", "john", "hello, world!"}/),
+            )
+          end
+        end
+      end
+    end
+  end
+
+  describe ".not_to_be" do
+    describe "< ..." do
+      context "when is less than expected" do
+        it "fails" do
+          expect {
+            expect(42).not_to_be < 45
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            "Expected 42 not to be < 45",
+          )
+        end
+      end
+
+      context "when is more than expected" do
+        it "passes" do
+          expect(55).not_to_be < 45
+        end
+      end
+
+      context "when is equal expected" do
+        it "passes" do
+          expect(45).not_to_be < 45
+        end
+      end
+    end
+
+    describe ".even?" do
+      context "when is even" do
+        it "fails" do
+          expect {
+            expect(42).not_to_be .even?
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            "Expected 42 not to be even?",
+          )
+        end
+      end
+
+      context "when is not even" do
+        it "passes" do
+          expect(45).not_to_be .even?
+        end
+      end
+    end
+
+    context "other types" do
+      describe ".correct?(word, name, greeting)" do
+        context "when is correct" do
+          it "fails" do
+            expect {
+              expect(Greeting.new).not_to_be .correct?("hello", "world", "hello, world!")
+            }.to raise_error(
+              Spec2::ExpectationNotMet,
+              match(/Expected #<Greeting:.+> not to be correct\? {"hello", "world", "hello, world!"}/),
+            )
+          end
+        end
+
+        context "when is not correct" do
+          it "passes" do
+            expect(Greeting.new).not_to_be .correct?("hello", "john", "hello, world!")
+          end
+        end
       end
     end
   end
