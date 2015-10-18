@@ -1,6 +1,6 @@
 module Spec2
   module Matchers
-    macro raise_error(klass, message=nil)
+    macro raise_error(klass=Exception, message=nil)
       ::Spec2::Matchers::Satisfy(->).new do |block|
         actual = "no error"
         ok = false
@@ -30,11 +30,14 @@ module Spec2
           ok = false
         end
 
-        failure = "Expected block to fail with #{{{klass}}} #{message}
+        message_description = ""
+        message_description = message.description if message.is_a?(::Spec2::Matcher)
+
+        failure = "Expected block to fail with #{{{klass}}} #{message_description}
         But got: #{actual}
         #{add_failure}"
 
-        negated = "Expected block not to fail with #{{{klass}}} #{message}
+        negated = "Expected block not to fail with #{{{klass}}} #{message_description}
         But got: #{actual}
         #{add_negated}"
 

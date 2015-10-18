@@ -285,6 +285,10 @@ class MyMatcher < Spec2::Matcher
     Expected: #{@expected.inspect}.
     Actual:   #{@actual.inspect}."
   end
+
+  def description
+    "(stuff in #{@expected} #{stuff})"
+  end
 end
 ```
 

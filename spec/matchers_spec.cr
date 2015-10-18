@@ -10,6 +10,12 @@ class EqualityExample
   end
 end
 
+class ErrorExample < Exception
+end
+
+class AnotherErrorExample < Exception
+end
+
 Spec2.describe Spec2::Matchers do
   describe "eq" do
     it "passes when values are equal" do
@@ -26,6 +32,59 @@ Spec2.describe Spec2::Matchers do
         Spec2::ExpectationNotMet,
         eq("Expected to be equal:\n\t\tExpected:\t 43\n\t\tActual:\t\t 42\n")
       )
+    end
+  end
+
+  describe "raise_error" do
+    context "when error is expected" do
+      context "when there is no error" do
+        it "fails" do
+          expect { expect { 42 }.to raise_error(ErrorExample) }.to raise_error(
+            Spec2::ExpectationNotMet,
+            eq("Expected block to fail with ErrorExample \n        But got: no error\n        ")
+          )
+        end
+      end
+
+      context "when there is an error of different class" do
+        it "fails" do
+          expect {
+            expect { raise AnotherErrorExample.new("another error") }.to raise_error(ErrorExample)
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            eq("Expected block to fail with ErrorExample \n        But got: AnotherErrorExample: another error\n        ")
+          )
+        end
+      end
+
+      context "when there is an error of the same class" do
+        it "passes" do
+          expect {
+            expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample)
+          }.not_to raise_error
+        end
+      end
+
+      context "and message matcher provided" do
+        context "when error message does not match" do
+          it "fails" do
+            expect {
+              expect { raise ErrorExample.new("another error") }.to raise_error(ErrorExample, eq("some error"))
+            }.to raise_error(
+              Spec2::ExpectationNotMet,
+              eq("Expected block to fail with ErrorExample (== \"some error\")\n        But got: ErrorExample: another error\n        Expected to be equal:\n\t\tExpected:\t \"some error\"\n\t\tActual:\t\t \"another error\"\n"),
+            )
+          end
+        end
+
+        context "when error message matches" do
+          it "passes" do
+            expect {
+              expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample, eq("some error"))
+            }.not_to raise_error
+          end
+        end
+      end
     end
   end
 end

@@ -9,6 +9,10 @@ module Spec2
         ok, @failure_message, @failure_message_when_negated = @block.call(actual)
         ok
       end
+
+      def description
+        "(satisfy #{@block.inspect})"
+      end
     end
   end
 end

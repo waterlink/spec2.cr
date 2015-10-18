@@ -18,6 +18,10 @@ module Spec2
       def failure_message_when_negated
         "Expected not to be equal:\n\t\tExpected;\t #{expected.inspect}\n\t\tActual:\t\t #{actual.inspect}\n"
       end
+
+      def description
+        "(== #{expected.inspect})"
+      end
     end
 
     Spec2.register_matcher(eq) { |expected| Eq.new(expected) }
