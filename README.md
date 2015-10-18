@@ -43,21 +43,6 @@ dependencies:
 
 ## Roadmap
 
-### `0.4`
-
-- [x] Allow nested `describe` and `context`.
-- [x] Ability to enable `should` syntax for legacy codebases.
-- [x] Proper `Reporter` protocol + built-in implementations + ability to
-  configure it.
-- [x] Proper `Runner` protocol + built-in implementations + ability to
-  configure it.
-- [x] Proper `Order` protocol + built-in implementations + ability to configure
-  it.
-- [x] Proper `Output` protocol + built-in implementations + ability to
-  configure it.
-- [x] Proper `Matcher` protocol + ability to register them.
-- [ ] Necessary builtin matchers.
-
 ### `0.5`
 
 - [ ] Configuration through CLI interface.
