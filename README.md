@@ -99,6 +99,12 @@ enable `#should` and `#should_not` on `Object`:
 Spec2.enable_should_on_object
 ```
 
+### List of builtin matchers
+
+- `eq("hello, world")` - asserts actual is equal to expected
+- `raise_error(ErrorClass [, message_matcher])` - checks if block raises expected error
+- `be(42)` - asserts actual is the same as expected
+
 ### Random order
 
 ```crystal

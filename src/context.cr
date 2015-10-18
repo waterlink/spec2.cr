@@ -1,6 +1,7 @@
 module Spec2
   class Context
     extend Matchers
+    include Matchers
 
     LETS = [] of String
     BEFORE = [] of ->
@@ -88,6 +89,10 @@ module Spec2
 
     def self.expect(actual)
       Expectation.new(actual)
+    end
+
+    def self.expect(&block)
+      Expectation.new(block)
     end
 
     macro def run_before_hooks(ctx) : Nil
