@@ -117,4 +117,199 @@ Spec2.describe Spec2::Matchers do
       end
     end
   end
+
+  describe "be_true" do
+    context "when value is true" do
+      it "passes" do
+        expect(true).to be_true
+      end
+    end
+
+    context "when value is false" do
+      it "fails" do
+        expect {
+          expect(false).to be_true
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t true\n\t\tActual:\t\t false\n",
+        )
+      end
+    end
+
+    context "when value is nil" do
+      it "fails" do
+        expect {
+          expect(nil).to be_true
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t true\n\t\tActual:\t\t nil\n",
+        )
+      end
+    end
+
+    context "when value is of different type" do
+      it "fails" do
+        expect {
+          expect("hello world").to be_true
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t true\n\t\tActual:\t\t \"hello world\"\n",
+        )
+      end
+    end
+  end
+
+  describe "be_false" do
+    context "when value is true" do
+      it "fails" do
+        expect {
+          expect(true).to be_false
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t false\n\t\tActual:\t\t true\n",
+        )
+      end
+    end
+
+    context "when value is false" do
+      it "passes" do
+        expect(false).to be_false
+      end
+    end
+
+    context "when value is nil" do
+      it "fails" do
+        expect {
+          expect(nil).to be_false
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t false\n\t\tActual:\t\t nil\n",
+        )
+      end
+    end
+
+    context "when value is of different type" do
+      it "fails" do
+        expect {
+          expect("hello world").to be_false
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t false\n\t\tActual:\t\t \"hello world\"\n",
+        )
+      end
+    end
+  end
+
+  describe "be_truthy" do
+    context "when value is true" do
+      it "passes" do
+        expect(true).to be_truthy
+      end
+    end
+
+    context "when value is false" do
+      it "fails" do
+        expect {
+          expect(false).to be_truthy
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected false to be truthy",
+        )
+      end
+    end
+
+    context "when value is nil" do
+      it "fails" do
+        expect {
+          expect(nil).to be_truthy
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected nil to be truthy",
+        )
+      end
+    end
+
+    context "when value is of different type" do
+      it "passes" do
+        expect("hello world").to be_truthy
+      end
+    end
+  end
+
+  describe "be_falsey" do
+    context "when value is true" do
+      it "fails" do
+        expect {
+          expect(true).to be_falsey
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected true to be falsey",
+        )
+      end
+    end
+
+    context "when value is false" do
+      it "passes" do
+        expect(false).to be_falsey
+      end
+    end
+
+    context "when value is nil" do
+      it "passes" do
+        expect(nil).to be_falsey
+      end
+    end
+
+    context "when value is of different type" do
+      it "fails" do
+        expect {
+          expect("hello world").to be_falsey
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected \"hello world\" to be falsey",
+        )
+      end
+    end
+  end
+
+  describe "be_nil" do
+    context "when value is true" do
+      it "fails" do
+        expect {
+          expect(true).to be_nil
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t nil\n\t\tActual:\t\t true\n",
+        )
+      end
+    end
+
+    context "when value is false" do
+      it "fails" do
+        expect {
+          expect(false).to be_nil
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t nil\n\t\tActual:\t\t false\n",
+        )
+      end
+    end
+
+    context "when value is nil" do
+      it "passes" do
+        expect(nil).to be_nil
+      end
+    end
+
+    context "when value is of different type" do
+      it "fails" do
+        expect {
+          expect("hello world").to be_nil
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be equal:\n\t\tExpected:\t nil\n\t\tActual:\t\t \"hello world\"\n",
+        )
+      end
+    end
+  end
 end

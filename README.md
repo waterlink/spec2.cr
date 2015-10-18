@@ -106,6 +106,11 @@ Spec2.enable_should_on_object
   expected error
 - `be(42)` - asserts actual is the same as expected
 - `match(/hello .+/)` - asserts actual is matching provided regexp
+- `be_true` - asserts actual is equal `true`
+- `be_false` - asserts actual is equal `false`
+- `be_truthy` - asserts actual is not `nil` or `false`
+- `be_falsey` - asserts actual is `nil` or `false`
+- `be_nil` - asserts actual is equal `nil`
 
 ### Random order
 
