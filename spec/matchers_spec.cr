@@ -17,7 +17,7 @@ class AnotherErrorExample < Exception
 end
 
 Spec2.describe Spec2::Matchers do
-  describe "eq" do
+  describe "eq(...)" do
     it "passes when values are equal" do
       expect(42).to eq(42)
       expect("hello world").to eq("hello world")
@@ -35,7 +35,7 @@ Spec2.describe Spec2::Matchers do
     end
   end
 
-  describe "raise_error" do
+  describe "raise_error([... [, ...]])" do
     context "when error is expected" do
       context "when there is no error" do
         it "fails" do
@@ -84,7 +84,7 @@ Spec2.describe Spec2::Matchers do
     end
   end
 
-  describe "be" do
+  describe "be(...)" do
     context "when things are not equal" do
       it "fails" do
         expect {
@@ -308,6 +308,32 @@ Spec2.describe Spec2::Matchers do
         }.to raise_error(
           Spec2::ExpectationNotMet,
           "Expected to be equal:\n\t\tExpected:\t nil\n\t\tActual:\t\t \"hello world\"\n",
+        )
+      end
+    end
+  end
+
+  describe "be_close(expected, delta)" do
+    context "when equal" do
+      it "passes" do
+        expect(42).to be_close(42, 0.01)
+      end
+    end
+
+    context "when in delta-proximity" do
+      it "passes" do
+        expect(42.005).to be_close(42, 0.01)
+        expect(41.995).to be_close(42, 0.01)
+      end
+    end
+
+    context "when out of delta-proximity" do
+      it "fails" do
+        expect {
+          expect(42.05).to be_close(42, 0.01)
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected to be close:\n        Expected:  42\n        Actual:    42.05\n        Max-delta: 0.01\n        Delta:     0.05"
         )
       end
     end
