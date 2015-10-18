@@ -59,9 +59,7 @@ Spec2.describe Spec2::Matchers do
 
       context "when there is an error of the same class" do
         it "passes" do
-          expect {
-            expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample)
-          }.not_to raise_error
+          expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample)
         end
       end
 
@@ -79,10 +77,42 @@ Spec2.describe Spec2::Matchers do
 
         context "when error message matches" do
           it "passes" do
-            expect {
-              expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample, eq("some error"))
-            }.not_to raise_error
+            expect { raise ErrorExample.new("some error") }.to raise_error(ErrorExample, eq("some error"))
           end
+        end
+      end
+    end
+  end
+
+  describe "be" do
+    context "when things are not equal" do
+      it "fails" do
+        expect {
+          expect([] of String).to be(EqualityExample.new)
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          match(/Expected to be the same:\n        Expected: #<EqualityExample:.+>\n        Actual:   \[\]/),
+        )
+      end
+    end
+
+    context "when things are equal" do
+      context "and different" do
+        it "fails" do
+          expect {
+            expect(EqualityExample.new).to be(EqualityExample.new)
+          }.to raise_error(
+            Spec2::ExpectationNotMet,
+            match(/Expected to be the same:\n        Expected: #<EqualityExample:.+>\n        Actual:   #<EqualityExample:.+>/),
+          )
+        end
+      end
+
+      context "and same" do
+        subject { EqualityExample.new }
+
+        it "passes" do
+          expect(subject).to eq(subject)
         end
       end
     end
