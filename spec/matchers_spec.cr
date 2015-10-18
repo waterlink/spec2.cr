@@ -483,4 +483,23 @@ Spec2.describe Spec2::Matchers do
       end
     end
   end
+
+  describe "be_a(...)" do
+    context "when type matches" do
+      it "passes" do
+        expect(42).to be_a(Int32)
+        expect("hello world").to be_a(String)
+        expect(Greeting.new).to be_a(Greeting)
+      end
+    end
+
+    context "when type does not match" do
+      expect {
+        expect(42).to be_a(String)
+      }.to raise_error(
+        Spec2::ExpectationNotMet,
+        "Expected 42 to be a String",
+      )
+    end
+  end
 end

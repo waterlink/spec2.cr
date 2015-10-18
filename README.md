@@ -119,6 +119,7 @@ Spec2.enable_should_on_object
 - `be_close(42, 0.01)` - asserts actual is in delta-proximity of expected
 - `expect(42).to_be < 45` - asserts arbitrary method call on actual to be
   truthy
+- `be_a(String)` - asserts actual to be of expected type (uses `is_a?`)
 
 ### Random order
 
