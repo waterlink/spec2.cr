@@ -1,9 +1,9 @@
 module Spec2
-  class Expectation
+  class Expectation(T)
     getter actual
     getter matcher
 
-    def initialize(@actual)
+    def initialize(@actual : T)
     end
 
     def to(@matcher)

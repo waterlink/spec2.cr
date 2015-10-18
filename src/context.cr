@@ -1,6 +1,7 @@
 module Spec2
   class Context
     extend Matchers
+    include Matchers
 
     LETS = [] of String
     BEFORE = [] of ->
@@ -90,6 +91,10 @@ module Spec2
       Expectation.new(actual)
     end
 
+    def self.expect(&block)
+      Expectation.new(block)
+    end
+
     macro def run_before_hooks(ctx) : Nil
       parent_run_before_hooks(ctx)
       {% for hook in BEFORE %}
@@ -156,8 +161,15 @@ module Spec2
   end
 
   class ContextRegistry
-    @@contexts = {Context => Context.new, DumbContextSubclass => DumbContextSubclass.new}
-    @@parents = {Context => Context, DumbContextSubclass => DumbContextSubclass}
+    @@contexts = {
+      Context.to_s => Context.new,
+      DumbContextSubclass.to_s => DumbContextSubclass.new,
+    }
+
+    @@parents = {
+      Context.to_s => Context,
+      DumbContextSubclass.to_s => DumbContextSubclass,
+    }
 
     def self.clear
       @@contexts.clear
@@ -165,15 +177,15 @@ module Spec2
     end
 
     def self.instance_of(klass)
-      @@contexts[klass] ||= klass.new
+      @@contexts[klass.to_s] ||= klass.new as Context
     end
 
     def self.register_parent(klass, parent)
-      @@parents[klass] = parent
+      @@parents[klass.to_s] = parent
     end
 
     def self.parent_of(klass)
-      @@parents[klass]?
+      @@parents[klass.to_s]?
     end
   end
 

@@ -3,6 +3,7 @@ module Spec2
     abstract def match(actual)
     abstract def failure_message
     abstract def failure_message_when_negated
+    abstract def description
   end
 
   macro register_matcher(name, &block)
