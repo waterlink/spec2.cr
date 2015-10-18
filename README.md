@@ -117,6 +117,8 @@ Spec2.enable_should_on_object
 - `be_falsey` - asserts actual is `nil` or `false`
 - `be_nil` - asserts actual is equal `nil`
 - `be_close(42, 0.01)` - asserts actual is in delta-proximity of expected
+- `expect(42).to_be < 45` - asserts arbitrary method call on actual to be
+  truthy
 
 ### Random order
 
