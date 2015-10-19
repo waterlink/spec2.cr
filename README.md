@@ -47,6 +47,7 @@ dependencies:
 
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
+- [ ] Shared examples and example groups.
 
 ## Usage
 
