@@ -5,8 +5,8 @@ module Spec2
     abstract def context_finished(context)
     abstract def example_started(example)
     abstract def example_succeeded(example)
-    abstract def example_failed(example)
-    abstract def example_errored(example)
+    abstract def example_failed(example, exception)
+    abstract def example_errored(example, exception)
     abstract def report
   end
 end
