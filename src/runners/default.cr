@@ -15,10 +15,9 @@ module Spec2
         order.order(context.examples).each do |example|
           begin
             reporter.example_started(example)
-            context.run_before_hooks(context)
-            example.call(context)
-            context.run_after_hooks(context)
-            context.clear_lets
+            example.__spec2_clear_lets
+            example.run
+            example.__spec2_clear_lets
             reporter.example_succeeded(example)
           rescue e : ExpectationNotMet
             @failed = true
