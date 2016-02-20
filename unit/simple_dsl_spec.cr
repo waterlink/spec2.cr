@@ -416,3 +416,47 @@ describe "before and after" do
     ])
   end
 end
+
+Spec2::Context.__clear
+evt = empty_evt
+Spec2::DSL.describe "uniqueness of context tree" do
+  evt << :root
+
+  context "context a" do
+    before { H.evt << :context_a }
+
+    it "works" do
+      H.evt << :works
+    end
+  end
+
+  context "inner" do
+    context "context a" do
+      before { H.evt << :inner_context_a }
+
+      it "works too" do
+        H.evt << :works_too
+      end
+    end
+  end
+end
+
+describe "uniqueness of context tree" do
+  examples = [
+    ::Spec2::Context.contexts[0].contexts[0].examples[0],
+    ::Spec2::Context.contexts[0].contexts[1].contexts[0].examples[0],
+  ]
+
+  it "distinguishes contexts with same what, but different parents" do
+    examples.map &.run
+    evt.should eq([
+      :root,
+      :context_a,
+      :works,
+      :inner_context_a,
+      :works_too,
+    ])
+  end
+end
+
+{% pp ::Spec2::Context::DEFINED %}

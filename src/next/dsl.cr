@@ -20,6 +20,7 @@ module Spec2
     end
 
     SPEC2_CONTEXT = DSLDummy
+    SPEC2_FULL_CONTEXT = ":root"
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
       ::Spec2::DSL.context({{what}}) {{blk}}
@@ -29,20 +30,25 @@ module Spec2
       {% name = what.id.stringify.gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
 
+      {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{name.id}" %}
+
       %current_context = @@__spec2_active_context
       module {{name.id}}
         include ::Spec2::DSL
         include {{SPEC2_CONTEXT}}
 
-        {% unless ::Spec2::Context::DEFINED[name.id] == true %}
+        {% unless ::Spec2::Context::DEFINED[full_name] == true %}
+          SPEC2_FULL_CONTEXT = {{full_name}}
           SPEC2_CONTEXT = {{name.id}}
           LETS = {} of String => Int32
           LETS_BANG = {} of String => Int32
           BEFORES = [] of Int32
           AFTERS = [] of Int32
           ITS = {} of String => Int32
-          {% ::Spec2::Context::DEFINED[name.id] = true %}
+          {% ::Spec2::Context::DEFINED[full_name] = true %}
         {% end %}
+
+        __spec2_sanity_checks({{name}})
 
         @@__spec2_active_context = ::Spec2::Context
           .new(%current_context, {{what}})
@@ -57,6 +63,12 @@ module Spec2
         __spec2_def_hooks
         __spec2_def_its
       end
+    end
+
+    macro __spec2_sanity_checks(name)
+      {% if name.id.stringify != SPEC2_CONTEXT.id.stringify %}
+        {% raise "Assertion failed: expected SPEC2_CONTEXT to equal #{name.id} but got #{SPEC2_CONTEXT}" %}
+      {% end %}
     end
 
     macro it(what, &blk)
