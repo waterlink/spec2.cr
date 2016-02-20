@@ -494,12 +494,14 @@ Spec2.describe Spec2::Matchers do
     end
 
     context "when type does not match" do
-      expect {
-        expect(42).to be_a(String)
-      }.to raise_error(
-        Spec2::ExpectationNotMet,
-        "Expected 42 to be a String",
-      )
+      it "fails" do
+        expect {
+          expect(42).to be_a(String)
+        }.to raise_error(
+          Spec2::ExpectationNotMet,
+          "Expected 42 to be a String",
+        )
+      end
     end
   end
 end

@@ -4,8 +4,9 @@ require "./matcher"
 require "./matchers/*"
 require "./exceptions"
 require "./expectation"
-require "./example"
-require "./context"
+
+require "./next"
+
 require "./runner"
 require "./high_runner"
 require "./runners/*"
@@ -20,13 +21,6 @@ require "./global_dsl"
 
 module Spec2
   extend self
-
-  META = {
-    "current" => [::Spec2::Context] of Class,
-    "parent" => [::Spec2::Context] of Class,
-  }
-
-  CONTEXT_COUNTER = [] of Int32
 
   @@high_runner = HighRunner.new(Context.instance)
 
@@ -50,46 +44,7 @@ module Spec2
   delegate run, high_runner
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
-    {% CONTEXT_COUNTER << 0 %}
-    {% label = what.id.stringify.gsub(/[^A-Za-z0-9_]/, "_").capitalize + "_#{CONTEXT_COUNTER.size}" %}
-
-    {% parent = META["current"][-1] %}
-    class Spec2__{{label.id}} < {{parent}}
-      {% old_parent = META["parent"][-1] %}
-      {% META["parent"] << parent %}
-      {% META["current"] << "Spec2__#{label.id}".id %}
-
-      def what
-        {{what}}
-      end
-
-      def description
-        ({{ parent }}.instance.description + " " + what.to_s).strip
-      end
-
-      def file
-        {{file}}
-      end
-
-      def line
-        {{line}}
-      end
-
-      macro __spec2__restore_meta__
-        \{% ::Spec2::META["current"] << {{META["parent"][-1]}} %}
-        \{% ::Spec2::META["parent"] << {{old_parent}} %}
-      end
-
-      LETS = [] of String
-      BEFORE = [] of ->
-      AFTER = [] of ->
-
-      {{block.body}}
-      __spec2__restore_meta__
-    end
-
-    {{parent}}.instance.contexts << Spec2__{{label.id}}.instance
-    ::Spec2::ContextRegistry.register_parent(Spec2__{{label.id}}, {{parent}})
+    ::Spec2::DSL.context({{what}}, {{file}}, {{line}}) {{block}}
   end
 end
 
