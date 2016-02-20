@@ -14,13 +14,13 @@ module Spec2
       total_seconds = elapsed_time.total_seconds
 
       if total_seconds < 1
-        output.puts "Finished in #{elapsed_time.total_milliseconds.round(2)} milliseconds"
+        "#{elapsed_time.total_milliseconds.round(2)} milliseconds"
       elsif total_seconds < 60
-        output.puts "Finished in #{total_seconds.round(2)} seconds"
+        "#{total_seconds.round(2)} seconds"
       else
         minutes = elapsed_time.minutes
         seconds = elapsed_time.seconds
-        output.puts "Finished in #{minutes}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
+        "#{minutes}:#{seconds < 10 ? "0" : ""}#{seconds} minutes"
       end
     end
   end
