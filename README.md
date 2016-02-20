@@ -264,6 +264,18 @@ it "works" do
 end
 ```
 
+### `delayed`
+
+Use `delayed { ... }` to verify expectations after test example and its `after`
+hooks finish. Example:
+
+```crystal
+it "does something interesting eventually" do
+  delayed { expect(value).to eq(42) }
+  # .. do something else, that should eventually lead to value == 42 ..
+end
+```
+
 ### Custom matchers
 
 First, define your matcher implementing [this protocol](src/matcher.cr):

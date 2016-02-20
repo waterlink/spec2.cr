@@ -84,10 +84,14 @@ module Spec2
         end
 
         def run
+          __spec2_delayed = [] of ->
+
           __spec2_before_hook
           __spec2_run_lets!
           {{blk.body}}
           __spec2_after_hook
+
+          __spec2_delayed.each &.call
         end
       end
 
@@ -181,6 +185,10 @@ module Spec2
           {{blk.body}}
         {% end %}
       end
+    end
+
+    macro delayed(&blk)
+      __spec2_delayed << -> {{blk}}
     end
 
     def expect(actual)
