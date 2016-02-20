@@ -1,4 +1,5 @@
 require "spec"
+require "../src/next"
 
 def empty_evt
   H.clear

@@ -1,5 +1,4 @@
 require "./spec_helper"
-require "../src/next"
 
 Spec2::Context.__clear
 evt = empty_evt
