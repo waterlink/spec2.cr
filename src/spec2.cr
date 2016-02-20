@@ -44,7 +44,7 @@ module Spec2
   delegate run, high_runner
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
-    ::Spec2::DSL.context({{what}}, {{file}}, {{line}}) {{block}}
+    ::Spec2::DSL.describe({{what}}, {{file}}, {{line}}) {{block}}
   end
 end
 

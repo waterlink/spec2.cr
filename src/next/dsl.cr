@@ -3,7 +3,7 @@ module Spec2
     include Matchers
     extend Matchers
 
-    module DSLDummy
+    module Spec2___
       include DSL
 
       def __spec2_before_hook
@@ -19,18 +19,24 @@ module Spec2
       end
     end
 
-    SPEC2_CONTEXT = DSLDummy
+    SPEC2_CONTEXT = Spec2___
     SPEC2_FULL_CONTEXT = ":root"
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
-      ::Spec2::DSL.context({{what}}) {{blk}}
+      {% if SPEC2_FULL_CONTEXT == ":root" %}
+        ::Spec2::DSL.context(
+      {% else %}
+        context(
+      {% end %}
+        {{what}}, {{file}}, {{line}}
+      ) {{blk}}
     end
 
     macro context(what, file = __FILE__, line = __LINE__, &blk)
       {% name = what.id.stringify.gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
 
-      {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{name.id}" %}
+      {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{what.id} (#{file.id}:#{line.id})" %}
 
       %current_context = @@__spec2_active_context
       module {{name.id}}
@@ -48,7 +54,7 @@ module Spec2
           {% ::Spec2::Context::DEFINED[full_name] = true %}
         {% end %}
 
-        __spec2_sanity_checks({{name}})
+        __spec2_sanity_checks({{name}}, {{full_name}})
 
         @@__spec2_active_context = ::Spec2::Context
           .new(%current_context, {{what}})
@@ -65,9 +71,10 @@ module Spec2
       end
     end
 
-    macro __spec2_sanity_checks(name)
+    macro __spec2_sanity_checks(name, full_name)
       {% if name.id.stringify != SPEC2_CONTEXT.id.stringify %}
-        {% raise "Assertion failed: expected SPEC2_CONTEXT to equal #{name.id} but got #{SPEC2_CONTEXT}" %}
+        {% raise "Assertion failed: expected SPEC2_CONTEXT to equal #{name.id} but got #{SPEC2_CONTEXT}
+         Full name: #{full_name.id}" %}
       {% end %}
     end
 

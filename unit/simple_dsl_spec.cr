@@ -40,7 +40,7 @@ end
 
 Spec2::Context.__clear
 evt = empty_evt
-Spec2::DSL.context "when something" do
+Spec2::DSL.context "something with inner context" do
   evt << :context_when_something
 
   context "when something else" do
@@ -51,10 +51,10 @@ end
 describe "inner context" do
   it "creates a context" do
     Spec2::Context.contexts[0].what
-      .should eq("when something")
+      .should eq("something with inner context")
 
     Spec2::Context.contexts[0].description
-      .should eq("when something")
+      .should eq("something with inner context")
   end
 
   it "creates an inner context" do
@@ -62,7 +62,7 @@ describe "inner context" do
       .should eq("when something else")
 
     Spec2::Context.contexts[0].contexts[0].description
-      .should eq("when something when something else")
+      .should eq("something with inner context when something else")
   end
 
   it "runs content of context and inner context" do
@@ -72,7 +72,7 @@ end
 
 Spec2::Context.__clear
 evt = empty_evt
-Spec2::DSL.describe "something" do
+Spec2::DSL.describe "something with it" do
   evt << :described_something
 
   it "works" do
@@ -86,7 +86,7 @@ describe "it statement" do
   it "defines an example" do
     example.what.should eq("works")
 
-    example.description.should eq("something works")
+    example.description.should eq("something with it works")
   end
 
   it "does not execute block right away" do
@@ -438,6 +438,9 @@ Spec2::DSL.describe "uniqueness of context tree" do
         H.evt << :works_too
       end
     end
+
+    context "random context inside" do
+    end
   end
 end
 
@@ -458,5 +461,3 @@ describe "uniqueness of context tree" do
     ])
   end
 end
-
-{% pp ::Spec2::Context::DEFINED %}
