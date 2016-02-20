@@ -4,7 +4,7 @@ module Spec2
     extend Matchers
 
     module Spec2___
-      include DSL
+      include ::Spec2::DSL
 
       def __spec2_before_hook
       end
@@ -19,7 +19,7 @@ module Spec2
       end
     end
 
-    SPEC2_CONTEXT = Spec2___
+    SPEC2_CONTEXT = ::Spec2::DSL::Spec2___
     SPEC2_FULL_CONTEXT = ":root"
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
@@ -40,7 +40,6 @@ module Spec2
 
       %current_context = @@__spec2_active_context
       module {{name.id}}
-        include ::Spec2::DSL
         include {{SPEC2_CONTEXT}}
 
         {% unless ::Spec2::Context::DEFINED[full_name] == true %}
