@@ -1,5 +1,5 @@
 module Spec2
-  abstract class Reporter
+  module Reporter
     abstract def configure_output(output)
     abstract def context_started(context)
     abstract def context_finished(context)

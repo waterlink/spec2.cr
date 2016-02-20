@@ -1,5 +1,5 @@
 module Spec2
-  abstract class Output
+   module Output
     abstract def print(style, string)
 
     def print(string)

@@ -1,6 +1,8 @@
 module Spec2
   module Reporters
-    class Doc < Reporter
+    class Doc
+      include Reporter
+
       getter! output, nesting
       def initialize
         @count = 0

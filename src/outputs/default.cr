@@ -1,6 +1,8 @@
 module Spec2
   module Outputs
-    class Default < Output
+    class Default
+      include Output
+
       COLORS = {
         success: :green,
         failure: :red,

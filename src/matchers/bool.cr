@@ -1,7 +1,9 @@
 module Spec2
   module Matchers
-    class BeTruthy < Matcher
+    class BeTruthy
+      include Matcher
       getter actual
+
       def match(@actual)
         !!actual
       end
@@ -19,8 +21,10 @@ module Spec2
       end
     end
 
-    class BeFalsey < Matcher
+    class BeFalsey
+      include Matcher
       getter actual
+
       def match(@actual)
         !actual
       end

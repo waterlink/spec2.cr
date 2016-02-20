@@ -1,11 +1,11 @@
 module Spec2
   module Matchers
-    class Eq < Matcher
+    class Eq
+      include Matcher
       getter expected
       getter actual
 
-      def initialize(@expected)
-      end
+      def initialize(@expected); end
 
       def match(@actual)
         expected == actual

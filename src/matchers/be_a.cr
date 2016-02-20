@@ -1,7 +1,9 @@
 module Spec2
   module Matchers
-    class BeA(T) < Matcher
+    class BeA(T)
+      include Matcher
       getter actual
+
       def match(@actual)
         actual.is_a?(T)
       end
