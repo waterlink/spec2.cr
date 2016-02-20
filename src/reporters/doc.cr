@@ -54,6 +54,7 @@ module Spec2
         output.puts
         status = @errors.size > 0 ? :failure : :success
         output.puts status, "Examples: #{@count}, failures: #{@errors.size}"
+        output.puts elapsed_time
       end
 
       private def indent
