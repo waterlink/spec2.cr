@@ -269,7 +269,9 @@ end
 First, define your matcher implementing [this protocol](src/matcher.cr):
 
 ```crystal
-class MyMatcher < Spec2::Matcher
+class MyMatcher
+  include Spec2::Matcher
+
   def initialize(@expected, @stuff)
   end
 
