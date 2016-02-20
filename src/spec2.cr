@@ -23,9 +23,14 @@ module Spec2
   extend self
 
   @@high_runner = HighRunner.new(Context.instance)
+  @@started_at = Time.now
 
   def high_runner
     @@high_runner
+  end
+
+  def started_at
+    @@started_at
   end
 
   def configure_high_runner(@@high_runner)
