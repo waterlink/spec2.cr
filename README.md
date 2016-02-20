@@ -28,7 +28,7 @@ Add it to `shard.yml`
 dependencies:
   spec2:
     github: waterlink/spec2.cr
-    version: ~> 0.4.2
+    version: ~> 0.5.0
 ```
 
 ## Goals
@@ -43,7 +43,7 @@ dependencies:
 
 ## Roadmap
 
-### `0.5`
+### `0.8`
 
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
