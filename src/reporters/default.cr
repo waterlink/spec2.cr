@@ -1,6 +1,8 @@
 module Spec2
   module Reporters
-    class Default < Reporter
+    class Default
+      include Reporter
+
       getter! output
       def initialize
         @count = 0

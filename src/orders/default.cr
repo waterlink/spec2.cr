@@ -1,6 +1,8 @@
 module Spec2
   module Orders
-    class Default < Order
+    class Default
+      include Order
+
       def order(list)
         list
       end

@@ -2,11 +2,13 @@ module Spec2
   module Reporters
     struct TestEvent
       property event, example, exception
-      def initialize(@event, @example, @exception)
-      end
+
+      def initialize(@event, @example, @exception); end
     end
 
-    class Test < Reporter
+    class Test
+      include Reporter
+
       getter received
       def initialize
         @received = [] of TestEvent

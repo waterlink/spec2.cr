@@ -1,10 +1,11 @@
 module Spec2
   module Matchers
-    class Close < Matcher
+    class Close
+      include Matcher
       getter actual, expected, delta
       getter! actual_delta
-      def initialize(@expected, @delta)
-      end
+
+      def initialize(@expected, @delta); end
 
       def match(@actual)
         @actual_delta = (actual - expected).abs

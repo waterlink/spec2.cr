@@ -1,5 +1,5 @@
 module Spec2
-  abstract class Matcher
+  module Matcher
     abstract def match(actual)
     abstract def failure_message
     abstract def failure_message_when_negated

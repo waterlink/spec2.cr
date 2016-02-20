@@ -1,7 +1,9 @@
 module Spec2
   module Matchers
-    class Be < Matcher
+    class Be
+      include Matcher
       getter expected, actual
+
       def initialize(@expected)
       end
 
@@ -27,8 +29,7 @@ module Spec2
     end
 
     class BeRecorder(T)
-      def initialize(@actual : T, @expectation)
-      end
+      def initialize(@actual : T, @expectation); end
 
       macro method_missing(name, args, block)
         ok = !!(@actual.{{name.id}}({{args.argify}}) {{block}})

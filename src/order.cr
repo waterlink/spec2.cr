@@ -1,5 +1,5 @@
 module Spec2
-  abstract class Order
+  module Order
     abstract def order(list)
   end
 end

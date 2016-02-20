@@ -1,6 +1,8 @@
 module Spec2
   module Runners
-    class Default < Runner
+    class Default
+      include Runner
+
       getter current_context
 
       def failed?
