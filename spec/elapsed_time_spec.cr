@@ -125,6 +125,10 @@ module Spec2
           expect(ElapsedTime.new(
             started_at, started_at + 7.37.hours,
           ).to_s).to eq("7:22:12 hours")
+
+          expect(ElapsedTime.new(
+            started_at, started_at + 7832.26.hours,
+          ).to_s).to eq("7832:15:36 hours")
         end
 
         it "formats seconds part as 2-digits 0-padded" do

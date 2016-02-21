@@ -1,6 +1,7 @@
 module Spec2
   class ElapsedTime
     FORMATTERS = {
+      # seconds range => formatter class
       (0...1) => InMilliseconds,
       (1...60) => InSeconds,
       (60...3600) => InMinutes,
@@ -61,7 +62,11 @@ module Spec2
 
     record InHours, elapsed do
       def to_s
-        "#{elapsed.hours}:#{minutes}:#{seconds} hours"
+        "#{hours}:#{minutes}:#{seconds} hours"
+      end
+
+      private def hours
+        elapsed.total_hours.to_i
       end
 
       private def minutes
