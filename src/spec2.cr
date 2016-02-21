@@ -18,6 +18,7 @@ require "./output"
 require "./outputs/*"
 require "./should"
 require "./global_dsl"
+require "./elapsed_time"
 
 module Spec2
   extend self
