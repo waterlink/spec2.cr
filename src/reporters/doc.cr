@@ -53,7 +53,7 @@ module Spec2
 
         output.puts
         status = @errors.size > 0 ? :failure : :success
-        output.puts "Finished in #{elapsed_time}"
+        output.puts "Finished in #{ElapsedTime.new.to_s}"
         output.puts status, "Examples: #{@count}, failures: #{@errors.size}"
       end
 

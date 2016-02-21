@@ -8,9 +8,5 @@ module Spec2
     abstract def example_failed(example, exception)
     abstract def example_errored(example, exception)
     abstract def report
-
-    private def elapsed_time
-      ElapsedTime.new.to_s
-    end
   end
 end
