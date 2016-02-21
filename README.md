@@ -162,6 +162,13 @@ Spec2.configure_reporter(MyReporter)
 Class `MyReporter` should implement `Reporter` protocol ([see it here](src/reporter.cr)).
 See also [a default reporter implementation](src/reporters/default.cr).
 
+If you are creating a custom reporter, you might want to use `ElapsedTime`
+class to report elapsed time for the test suite. Example usage:
+
+```crystal
+output.puts "Finished in #{ElapsedTime.new.to_s}"
+```
+
 ### Configuring custom Runner
 
 ```crystal
