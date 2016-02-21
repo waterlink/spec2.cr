@@ -95,6 +95,10 @@ module Spec2
           expect(ElapsedTime.new(
             started_at, started_at + 25.7.minutes,
           ).to_s).to eq("25:42 minutes")
+
+          expect(ElapsedTime.new(
+            started_at, started_at + 59.99.minutes,
+          ).to_s).to eq("59:59 minutes")
         end
 
         it "formats seconds part as 2 digit 0-padded" do
@@ -113,12 +117,27 @@ module Spec2
       end
 
       context "when total_seconds >= 1 hour" do
-        # pending
-        #it "returns in hours" do
-        #  expect(ElapsedTime.new(
-        #    started_at, started_at + 7.37.hours,
-        #  ).to_s).to eq("7:22:12 hours")
-        #end
+        it "returns in hours" do
+          expect(ElapsedTime.new(
+            started_at, started_at + 60.minutes,
+          ).to_s).to eq("1:00:00 hours")
+
+          expect(ElapsedTime.new(
+            started_at, started_at + 7.37.hours,
+          ).to_s).to eq("7:22:12 hours")
+        end
+
+        it "formats seconds part as 2-digits 0-padded" do
+          expect(ElapsedTime.new(
+            started_at, started_at + 60.1.minutes,
+          ).to_s).to eq("1:00:06 hours")
+        end
+
+        it "formats minutes part as 2-digits 0-padded" do
+          expect(ElapsedTime.new(
+            started_at, started_at + 61.minutes,
+          ).to_s).to eq("1:01:00 hours")
+        end
       end
     end
   end

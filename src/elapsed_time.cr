@@ -3,7 +3,8 @@ module Spec2
     FORMATTERS = {
       (0...1) => InMilliseconds,
       (1...60) => InSeconds,
-      (60..Float32::INFINITY) => InMinutes,
+      (60...3600) => InMinutes,
+      (3600..Float32::INFINITY) => InHours,
     }
 
     private getter time_now, started_at
@@ -30,6 +31,12 @@ module Spec2
       @_total_seconds ||= elapsed.total_seconds
     end
 
+    record Format2DigitNumber, value do
+      def to_s
+        "%02d" % value
+      end
+    end
+
     record InSeconds, elapsed do
       def to_s
         "#{elapsed.total_seconds.round(2)} seconds"
@@ -48,8 +55,21 @@ module Spec2
       end
 
       private def seconds
-        return elapsed.seconds if elapsed.seconds >= 10
-        "0#{elapsed.seconds}"
+        Format2DigitNumber.new(elapsed.seconds).to_s
+      end
+    end
+
+    record InHours, elapsed do
+      def to_s
+        "#{elapsed.hours}:#{minutes}:#{seconds} hours"
+      end
+
+      private def minutes
+        Format2DigitNumber.new(elapsed.minutes).to_s
+      end
+
+      private def seconds
+        Format2DigitNumber.new(elapsed.seconds).to_s
       end
     end
   end
