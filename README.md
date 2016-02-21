@@ -166,7 +166,7 @@ If you are creating a custom reporter, you might want to use `ElapsedTime`
 class to report elapsed time for the test suite. Example usage:
 
 ```crystal
-output.puts "Finished in #{ElapsedTime.new.to_s}"
+output.puts "Finished in #{::Spec2::ElapsedTime.new.to_s}"
 ```
 
 ### Configuring custom Runner
