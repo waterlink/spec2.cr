@@ -36,6 +36,12 @@ module Spec2
       def to_s
         "%02d" % value
       end
+
+      macro delegate(name, target)
+        def {{name.id}}
+          Format2DigitNumber.new({{target.id}}.{{name.id}}).to_s
+        end
+      end
     end
 
     record InSeconds, elapsed do
@@ -55,9 +61,7 @@ module Spec2
         "#{elapsed.minutes}:#{seconds} minutes"
       end
 
-      private def seconds
-        Format2DigitNumber.new(elapsed.seconds).to_s
-      end
+      Format2DigitNumber.delegate seconds, elapsed
     end
 
     record InHours, elapsed do
@@ -69,13 +73,8 @@ module Spec2
         elapsed.total_hours.to_i
       end
 
-      private def minutes
-        Format2DigitNumber.new(elapsed.minutes).to_s
-      end
-
-      private def seconds
-        Format2DigitNumber.new(elapsed.seconds).to_s
-      end
+      Format2DigitNumber.delegate minutes, elapsed
+      Format2DigitNumber.delegate seconds, elapsed
     end
   end
 end
