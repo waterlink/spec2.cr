@@ -8,12 +8,12 @@ Spec2::DSL.describe "something with delayed" do
   after { answers["life"] -= 12 }
 
   it "passes" do
-    delayed { answers["life"].should eq(42) }
+    delayed { answers["life"].should H.eq(42) }
     answers["life"] -= 20
   end
 
   it "fails" do
-    delayed { answers["life"].should eq(42) }
+    delayed { answers["life"].should H.eq(42) }
   end
 end
 

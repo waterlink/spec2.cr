@@ -14,4 +14,8 @@ module H
   def self.clear
     @@_evt = nil
   end
+
+  def self.eq(expected)
+    Spec::EqualExpectation.new(expected)
+  end
 end

@@ -9,11 +9,11 @@ end
 describe "describe statement" do
   it "creates a context" do
     Spec2::Context.contexts[0].what
-      .should eq("something")
+      .should H.eq("something")
   end
 
   it "runs content of context" do
-    evt.should eq([:described_something])
+    evt.should H.eq([:described_something])
   end
 end
 
@@ -26,14 +26,14 @@ end
 describe "context statement" do
   it "creates a context" do
     Spec2::Context.contexts[0].what
-      .should eq("when something")
+      .should H.eq("when something")
 
     Spec2::Context.contexts[0].description
-      .should eq("when something")
+      .should H.eq("when something")
   end
 
   it "runs content of context" do
-    evt.should eq([:context_when_something])
+    evt.should H.eq([:context_when_something])
   end
 end
 
@@ -50,22 +50,22 @@ end
 describe "inner context" do
   it "creates a context" do
     Spec2::Context.contexts[0].what
-      .should eq("something with inner context")
+      .should H.eq("something with inner context")
 
     Spec2::Context.contexts[0].description
-      .should eq("something with inner context")
+      .should H.eq("something with inner context")
   end
 
   it "creates an inner context" do
     Spec2::Context.contexts[0].contexts[0].what
-      .should eq("when something else")
+      .should H.eq("when something else")
 
     Spec2::Context.contexts[0].contexts[0].description
-      .should eq("something with inner context when something else")
+      .should H.eq("something with inner context when something else")
   end
 
   it "runs content of context and inner context" do
-    evt.should eq([:context_when_something, :context_when_something_else])
+    evt.should H.eq([:context_when_something, :context_when_something_else])
   end
 end
 
@@ -83,18 +83,18 @@ describe "it statement" do
   example = Spec2::Context.contexts[0].examples[0]
 
   it "defines an example" do
-    example.what.should eq("works")
+    example.what.should H.eq("works")
 
-    example.description.should eq("something with it works")
+    example.description.should H.eq("something with it works")
   end
 
   it "does not execute block right away" do
-    evt.should eq([:described_something])
+    evt.should H.eq([:described_something])
   end
 
   it "is possible to execute a block" do
     example.run
-    evt.should eq([:described_something, :it_works])
+    evt.should H.eq([:described_something, :it_works])
   end
 end
 
@@ -107,7 +107,7 @@ Spec2::DSL.describe "something with let" do
 
   it "works" do
     H.evt << :it_works
-    greeting.should eq("hello world")
+    greeting.should H.eq("hello world")
   end
 end
 
@@ -115,12 +115,12 @@ describe "let statement" do
   example = Spec2::Context.contexts[0].examples[0]
 
   it "does not execute let block right away" do
-    evt.should eq([:described_something])
+    evt.should H.eq([:described_something])
   end
 
   it "executes let and it blocks once when run" do
     example.run
-    evt.should eq([
+    evt.should H.eq([
       :described_something,
       :it_works,
       :define_let,
@@ -131,7 +131,7 @@ describe "let statement" do
     example.run
     example.run
     example.run
-    evt.should eq([
+    evt.should H.eq([
       :described_something,
       :it_works,
       :define_let,
@@ -153,7 +153,7 @@ Spec2::DSL.describe "something with let bang" do
 
   it "calls let" do
     H.evt << :it_calls
-    greeting.should eq("hello world")
+    greeting.should H.eq("hello world")
   end
 end
 
@@ -162,12 +162,12 @@ describe "let! statement" do
   calls = Spec2::Context.contexts[0].examples[1]
 
   it "does not execute let block right away" do
-    evt.should eq([] of Symbol)
+    evt.should H.eq([] of Symbol)
   end
 
   it "executes let block when is not used" do
     does_not.run
-    evt.should eq([
+    evt.should H.eq([
       :define_let,
       :it_does_not,
     ])
@@ -175,7 +175,7 @@ describe "let! statement" do
 
   it "executes let block when used" do
     calls.run
-    evt.should eq([
+    evt.should H.eq([
       :define_let,
       :it_does_not,
       :define_let,
@@ -194,7 +194,7 @@ Spec2::DSL.describe "inherited lets" do
     let(name) { "world" }
 
     it "is a first program" do
-      greeting.should eq("hello world")
+      greeting.should H.eq("hello world")
     end
   end
 
@@ -203,14 +203,14 @@ Spec2::DSL.describe "inherited lets" do
     let(name) { "John" }
 
     it "is an informal greeting" do
-      greeting.should eq("hey John")
+      greeting.should H.eq("hey John")
     end
 
     context "when greeter is lazy" do
       let(greeting) { "Hi!" }
 
       it "is a lazy form of greeting" do
-        greeting.should eq("Hi!")
+        greeting.should H.eq("Hi!")
       end
     end
 
@@ -218,7 +218,7 @@ Spec2::DSL.describe "inherited lets" do
       let(name) { "Joe" }
 
       it "is an informal greeting for Joe" do
-        greeting.should eq("hey Joe")
+        greeting.should H.eq("hey Joe")
       end
     end
 
@@ -226,7 +226,7 @@ Spec2::DSL.describe "inherited lets" do
       let(greeting) { "#{super}! How are you?" }
 
       it "is a nice form of greeting" do
-        greeting.should eq("hey John! How are you?")
+        greeting.should H.eq("hey John! How are you?")
       end
     end
   end
@@ -252,7 +252,7 @@ Spec2::DSL.describe "something with subject" do
   subject { "hello world" }
 
   it "works" do
-    subject.should eq("hello world")
+    subject.should H.eq("hello world")
   end
 end
 
@@ -275,7 +275,7 @@ Spec2::DSL.describe "something with subject bang" do
 
   it "calls" do
     H.evt << :calls
-    subject.should eq("hello world")
+    subject.should H.eq("hello world")
   end
 end
 
@@ -284,13 +284,13 @@ describe "subject bang statement" do
   calls = ::Spec2::Context.contexts[0].examples[1]
 
   it "works as let!(subject)" do
-    evt.should eq([] of Symbol)
+    evt.should H.eq([] of Symbol)
 
     does_not.run
-    evt.should eq([:subject_defined, :does_not])
+    evt.should H.eq([:subject_defined, :does_not])
 
     calls.run
-    evt.should eq([
+    evt.should H.eq([
       :subject_defined,
       :does_not,
       :subject_defined,
@@ -305,7 +305,7 @@ Spec2::DSL.describe "named subject" do
   subject(greeting) { "hello world" }
 
   it "works" do
-    greeting.should eq("hello world")
+    greeting.should H.eq("hello world")
   end
 end
 
@@ -328,7 +328,7 @@ Spec2::DSL.describe "named subject bang" do
 
   it "calls" do
     H.evt << :calls
-    greeting.should eq("hello world")
+    greeting.should H.eq("hello world")
   end
 end
 
@@ -337,13 +337,13 @@ describe "named subject bang statement" do
   calls = ::Spec2::Context.contexts[0].examples[1]
 
   it "works as let!(subject)" do
-    evt.should eq([] of Symbol)
+    evt.should H.eq([] of Symbol)
 
     does_not.run
-    evt.should eq([:subject_defined, :does_not])
+    evt.should H.eq([:subject_defined, :does_not])
 
     calls.run
-    evt.should eq([
+    evt.should H.eq([
       :subject_defined,
       :does_not,
       :subject_defined,
@@ -389,11 +389,11 @@ describe "before and after" do
   ]
 
   it "runs hooks in right order" do
-    evt.should eq([:described_something])
+    evt.should H.eq([:described_something])
 
     examples.each &.run
 
-    evt.should eq([
+    evt.should H.eq([
       :described_something,
 
       :before_a,
@@ -451,7 +451,7 @@ describe "uniqueness of context tree" do
 
   it "distinguishes contexts with same what, but different parents" do
     examples.map &.run
-    evt.should eq([
+    evt.should H.eq([
       :root,
       :context_a,
       :works,
