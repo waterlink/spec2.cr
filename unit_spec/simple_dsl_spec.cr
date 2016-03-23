@@ -418,6 +418,35 @@ end
 
 Spec2::Context.__clear
 evt = empty_evt
+Spec2::DSL.describe "something with after after failure" do
+  H.evt << :root
+
+  after { H.evt << :it_is_cleaning_time }
+
+  it "fails" do
+    H.evt << :before_failure
+    raise "I fail"
+  end
+end
+
+describe "after block when example failed" do
+  example = ::Spec2::Context.contexts[0].examples[0]
+
+  it "still gets executed" do
+    expect_raises do
+      example.run
+    end
+
+    H.evt.should eq([
+      :root,
+      :before_failure,
+      :it_is_cleaning_time
+    ])
+  end
+end
+
+Spec2::Context.__clear
+evt = empty_evt
 Spec2::DSL.describe "uniqueness of context tree" do
   evt << :root
 
