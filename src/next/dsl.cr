@@ -107,9 +107,10 @@ module Spec2
           __spec2_before_hook
           __spec2_run_lets!
           {{blk.body}}
-          __spec2_after_hook
 
-          __spec2_delayed.each &.call
+        ensure
+          __spec2_after_hook
+          __spec2_delayed.not_nil!.each &.call
         end
       end
 
