@@ -11,12 +11,16 @@ module Spec2
       instance.contexts
     end
 
+    def self.focused_contexts
+      instance.focused_contexts
+    end
+
     def self.__clear
       instance.__clear
     end
 
-    getter what, description
-    def initialize(parent, @what)
+    getter what, description, focused
+    def initialize(parent, @what, @focused = false)
       @description = what
 
       if parent && !parent.description.to_s.empty?
@@ -24,12 +28,24 @@ module Spec2
       end
     end
 
+    def focused?
+      focused
+    end
+
     def contexts
       @_contexts ||= [] of Context
     end
 
+    def focused_contexts
+      contexts.select(&.focused?)
+    end
+
     def examples
       @_examples ||= [] of Example
+    end
+
+    def focused_examples
+      examples.select(&.focused?)
     end
 
     def __clear

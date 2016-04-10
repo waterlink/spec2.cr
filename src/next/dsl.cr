@@ -22,17 +22,25 @@ module Spec2
     SPEC2_CONTEXT = ::Spec2::DSL::Spec2___
     SPEC2_FULL_CONTEXT = ":root"
 
-    macro describe(what, file = __FILE__, line = __LINE__, &blk)
+    macro fdescribe(what, file = __FILE__, line = __LINE__, &blk)
+      ::Spec2::DSL.describe({{what}}, true, {{file}}, {{line}}) {{blk}}
+    end
+
+    macro describe(what, focused = false, file = __FILE__, line = __LINE__, &blk)
       {% if SPEC2_FULL_CONTEXT == ":root" %}
         ::Spec2::DSL.context(
       {% else %}
         context(
       {% end %}
-        {{what}}, {{file}}, {{line}}
+        {{what}}, {{focused}}, {{file}}, {{line}}
       ) {{blk}}
     end
 
-    macro context(what, file = __FILE__, line = __LINE__, &blk)
+    macro fcontext(what, file = __FILE__, line = __LINE__, &blk)
+      context({{what}}, true, {{file}}, {{line}}) {{blk}}
+    end
+
+    macro context(what, focused = false, file = __FILE__, line = __LINE__, &blk)
       {% name = what.id.stringify.gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
 
@@ -50,13 +58,14 @@ module Spec2
           BEFORES = [] of Int32
           AFTERS = [] of Int32
           ITS = {} of String => Int32
+          FITS = {} of String => Bool
           {% ::Spec2::Context::DEFINED[full_name] = true %}
         {% end %}
 
         __spec2_sanity_checks({{name}}, {{full_name}})
 
         @@__spec2_active_context = ::Spec2::Context
-          .new(%current_context, {{what}})
+          .new(%current_context, {{what}}, {{focused}})
 
         (%current_context ||
          ::Spec2::Context.instance)
@@ -77,8 +86,13 @@ module Spec2
       {% end %}
     end
 
-    macro it(what, &blk)
+    macro it(what, focused = false, &blk)
       {% ITS[what] = blk %}
+      {% FITS[what] = focused %}
+    end
+
+    macro fit(what, &blk)
+      it({{what}}, true) {{blk}}
     end
 
     macro __spec2_def_its
@@ -89,6 +103,7 @@ module Spec2
 
     macro __spec2_def_it(what)
       {% blk = ITS[what] %}
+      {% focused = FITS[what] %}
 
       {% name = what.id.stringify.gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
@@ -98,6 +113,7 @@ module Spec2
 
         def initialize(@context)
           @what = {{what}}
+          @focused = {{focused}}
           @blk = -> {}
         end
 

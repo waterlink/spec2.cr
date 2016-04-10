@@ -1,7 +1,7 @@
 module Spec2
   class Example
-    getter context, what
-    def initialize(@context, @what, &@blk : ->)
+    getter context, what, focused
+    def initialize(@context, @what, @focused = false, &@blk : ->)
     end
 
     def description
@@ -13,6 +13,10 @@ module Spec2
     end
 
     def __spec2_clear_lets
+    end
+
+    def focused?
+      focused
     end
   end
 end

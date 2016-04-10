@@ -49,8 +49,12 @@ module Spec2
   delegate exit_code, high_runner
   delegate run, high_runner
 
-  macro describe(what, file = __FILE__, line = __LINE__, &block)
-    ::Spec2::DSL.describe({{what}}, {{file}}, {{line}}) {{block}}
+  macro describe(what, focused = false, file = __FILE__, line = __LINE__, &block)
+    ::Spec2::DSL.describe({{what}}, {{focused}}, {{file}}, {{line}}) {{block}}
+  end
+
+  macro fdescribe(what, file = __FILE__, line = __LINE__, &block)
+    ::Spec2.describe({{what}}, true, {{file}}, {{line}}) {{block}}
   end
 end
 
