@@ -2,6 +2,11 @@ module Spec2
   module Reporters
     class Doc
       include Reporter
+      extend Reporter::Factory
+
+      def self.build
+        new
+      end
 
       getter! output, nesting
       def initialize
@@ -10,7 +15,7 @@ module Spec2
         @nesting = 0
       end
 
-      def configure_output(@output)
+      def configure_output(@output : Output)
       end
 
       def context_started(context)

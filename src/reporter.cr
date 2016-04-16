@@ -1,5 +1,6 @@
 module Spec2
   module Reporter
+    Factory.abstract
     abstract def configure_output(output)
     abstract def context_started(context)
     abstract def context_finished(context)

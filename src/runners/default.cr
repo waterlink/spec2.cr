@@ -2,7 +2,13 @@ module Spec2
   module Runners
     class Default
       include Runner
+      extend Runner::Factory
 
+      def self.build
+        new
+      end
+
+      @current_context : Context?
       getter current_context
 
       def failed?

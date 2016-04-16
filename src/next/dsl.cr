@@ -144,19 +144,46 @@ module Spec2
       def __spec2_clear_lets
         super
         {% for what in LETS %}
-          @{{what.id}} = nil
+          __spec2_clear_specific_let({{what}})
         {% end %}
+      end
+    end
+
+    macro __spec2_clear_specific_let(name)
+      @_{{name.id}} = nil
+    end
+
+    module LetProtocol
+      abstract def unwrap
+    end
+
+    class Let(T)
+      include LetProtocol
+
+      @unwrap : T
+      getter unwrap
+
+      def initialize(&block : -> T)
+        @unwrap = block.call
       end
     end
 
     macro __spec2_def_let(name)
       {% blk = LETS[name] %}
 
+      @_{{name.id}} : LetProtocol?
+
       def {{name.id}}
-        @_{{name.id}} ||= {{name.id}}!
+        (@_{{name.id}} ||= {{name.id}}!).unwrap as typeof(__spec2_for_typeof_{{name.id}})
       end
 
       def {{name.id}}!
+        Let.new do
+          {{blk.body}}
+        end
+      end
+
+      def __spec2_for_typeof_{{name.id}}
         {{blk.body}}
       end
     end

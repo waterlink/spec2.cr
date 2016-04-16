@@ -1,5 +1,7 @@
 require "colorize"
 
+require "./factory"
+
 require "./matcher"
 require "./matchers/*"
 require "./exceptions"
@@ -24,6 +26,8 @@ module Spec2
   extend self
 
   @@high_runner = HighRunner.new(Context.instance)
+
+  @@started_at : Time
   @@started_at = Time.now
 
   def high_runner

@@ -2,11 +2,16 @@ module Spec2
   module Outputs
     class Default
       include Output
+      extend Output::Factory
 
       COLORS = {
         success: :green,
         failure: :red,
       }
+
+      def self.build
+        new
+      end
 
       def print(style, string)
         return io_print(string) if style == :normal

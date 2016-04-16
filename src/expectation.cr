@@ -1,8 +1,14 @@
 module Spec2
+  module ExpectationProtocol
+    abstract def callback(ok, failure_message, failure_message_when_negated)
+  end
+
   class Expectation(T)
+    include ExpectationProtocol
+
     getter actual
-    getter matcher
-    getter negative
+    getter matcher : Matcher?
+    getter negative : Bool
 
     def initialize(@actual : T)
       @negative = false

@@ -1,26 +1,28 @@
 module Spec2
   module Matchers
-    class Be
+    class Be(T)
       include Matcher
-      getter expected, actual
+      getter expected
+      getter actual_representation : String?
 
-      def initialize(@expected)
+      def initialize(@expected : T)
       end
 
-      def match(@actual)
+      def match(actual)
+        @actual_representation = actual.inspect
         expected.same?(actual)
       end
 
       def failure_message
         "Expected to be the same:
         Expected: #{expected.inspect}
-        Actual:   #{actual.inspect}"
+        Actual:   #{actual_representation}"
       end
 
       def failure_message_when_negated
         "Expected to be different:
         Expected: #{expected.inspect}
-        Actual:   #{actual.inspect}"
+        Actual:   #{actual_representation}"
       end
 
       def description
@@ -29,7 +31,8 @@ module Spec2
     end
 
     class BeRecorder(T)
-      def initialize(@actual : T, @expectation); end
+      def initialize(@actual : T, @expectation : ExpectationProtocol)
+      end
 
       macro method_missing(name, args, block)
         ok = !!(@actual.{{name.id}}({{args.argify}}) {{block}})

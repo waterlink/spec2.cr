@@ -2,18 +2,19 @@ module Spec2
   module Matchers
     class BeA(T)
       include Matcher
-      getter actual
+      getter actual_representation : String?
 
-      def match(@actual)
+      def match(actual)
+        @actual_representation = actual.inspect
         actual.is_a?(T)
       end
 
       def failure_message
-        "Expected #{actual.inspect} to be a #{T}"
+        "Expected #{actual_representation} to be a #{T}"
       end
 
       def failure_message_when_negated
-        "Expected #{actual.inspect} not to be a #{T}"
+        "Expected #{actual_representation} not to be a #{T}"
       end
 
       def description
