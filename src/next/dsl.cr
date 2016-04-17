@@ -3,8 +3,20 @@ module Spec2
     include Matchers
     extend Matchers
 
+    module HasActiveContext
+      macro included
+        @@__spec2_active_context : ::Spec2::Context
+        def self.__spec2_active_context
+          @@__spec2_active_context
+        end
+      end
+    end
+
     module Spec2___
       include ::Spec2::DSL
+      include ::Spec2::DSL::HasActiveContext
+
+      @@__spec2_active_context = ::Spec2::Context.instance
 
       def __spec2_before_hook
       end
@@ -48,6 +60,10 @@ module Spec2
       %current_context = @@__spec2_active_context
       module {{name.id}}
         include {{SPEC2_CONTEXT}}
+        include ::Spec2::DSL::HasActiveContext
+
+        @@__spec2_active_context = ::Spec2::Context
+          .new({{SPEC2_CONTEXT}}.__spec2_active_context, {{what}})
 
         {% unless ::Spec2::Context::DEFINED[full_name] == true %}
           SPEC2_FULL_CONTEXT = {{full_name}}
@@ -61,9 +77,6 @@ module Spec2
         {% end %}
 
         __spec2_sanity_checks({{name}}, {{full_name}})
-
-        @@__spec2_active_context = ::Spec2::Context
-          .new(%current_context, {{what}})
 
         (%current_context ||
          ::Spec2::Context.instance)
