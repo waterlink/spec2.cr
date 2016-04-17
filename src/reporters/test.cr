@@ -3,11 +3,17 @@ module Spec2
     struct TestEvent
       property event, example, exception
 
-      def initialize(@event, @example, @exception); end
+      def initialize(@event : Symbol, @example : Example?, @exception : Exception?)
+      end
     end
 
     class Test
       include Reporter
+      extend Reporter::Factory
+
+      def self.build
+        new
+      end
 
       getter received
       def initialize

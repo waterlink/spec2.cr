@@ -1,8 +1,10 @@
 module Spec2
   class HighRunner
+    @current_runner : Runner?
+
     getter reporter, runner, order, output, root, exit_code
     getter! current_runner
-    def initialize(@root)
+    def initialize(@root : Context)
       @exit_code = 0
     end
 
@@ -10,16 +12,16 @@ module Spec2
       [root]
     end
 
-    def configure_reporter(@reporter)
+    def configure_reporter(@reporter : Reporter::Factory)
     end
 
-    def configure_runner(@runner)
+    def configure_runner(@runner : Runner::Factory)
     end
 
-    def configure_order(@order)
+    def configure_order(@order : Order::Factory)
     end
 
-    def configure_output(@output)
+    def configure_output(@output : Output::Factory)
     end
 
     def want_exit(@exit_code)
@@ -54,10 +56,10 @@ module Spec2
         )
       end
 
-      reporter = reporter_class.new
-      @current_runner = runner_class.new
-      order = order_class.new
-      output = output_class.new
+      reporter = reporter_class.build
+      @current_runner = runner_class.build
+      order = order_class.build
+      output = output_class.build
 
       reporter.configure_output(output)
 

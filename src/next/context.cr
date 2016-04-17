@@ -1,6 +1,5 @@
 module Spec2
   class Context
-    CURRENT = {"get" => ::Spec2::Context::Inside}
     DEFINED = {} of String => Bool
 
     def self.instance
@@ -16,12 +15,16 @@ module Spec2
     end
 
     getter what, description
-    def initialize(parent, @what)
+    def initialize(parent, @what : String)
       @description = what
 
       if parent && !parent.description.to_s.empty?
         @description = "#{parent.description} #{what}"
       end
+    end
+
+    def initialize(parent, what)
+      initialize(parent, what.to_s)
     end
 
     def contexts
@@ -34,12 +37,6 @@ module Spec2
 
     def __clear
       @_contexts = nil
-    end
-
-    module Inside
-      include DSL
-
-      @@__spec2_active_context = Context.instance
     end
   end
 end

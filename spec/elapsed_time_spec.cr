@@ -3,7 +3,7 @@ require "../src/elapsed_time"
 
 module Spec2
   Spec2.describe ElapsedTime do
-    let(:started_at) { Time.new(2014, 4, 21, 13, 27, 33, 57) }
+    let(started_at) { Time.new(2014, 4, 21, 13, 27, 33, 57) }
 
     describe "#to_s" do
       context "when seconds < 1" do

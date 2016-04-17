@@ -3,8 +3,20 @@ module Spec2
     include Matchers
     extend Matchers
 
+    module HasActiveContext
+      macro included
+        @@__spec2_active_context : ::Spec2::Context
+        def self.__spec2_active_context
+          @@__spec2_active_context
+        end
+      end
+    end
+
     module Spec2___
       include ::Spec2::DSL
+      include ::Spec2::DSL::HasActiveContext
+
+      @@__spec2_active_context = ::Spec2::Context.instance
 
       def __spec2_before_hook
       end
@@ -24,12 +36,19 @@ module Spec2
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
       {% if SPEC2_FULL_CONTEXT == ":root" %}
+        module Spec2___Root
+        @@__spec2_active_context : ::Spec2::Context
+        @@__spec2_active_context = ::Spec2::Context.instance
         ::Spec2::DSL.context(
       {% else %}
         context(
       {% end %}
         {{what}}, {{file}}, {{line}}
       ) {{blk}}
+
+      {% if SPEC2_FULL_CONTEXT == ":root" %}
+        {{:end.id}}
+      {% end %}
     end
 
     macro context(what, file = __FILE__, line = __LINE__, &blk)
@@ -41,6 +60,10 @@ module Spec2
       %current_context = @@__spec2_active_context
       module {{name.id}}
         include {{SPEC2_CONTEXT}}
+        include ::Spec2::DSL::HasActiveContext
+
+        @@__spec2_active_context = ::Spec2::Context
+          .new({{SPEC2_CONTEXT}}.__spec2_active_context, {{what}})
 
         {% unless ::Spec2::Context::DEFINED[full_name] == true %}
           SPEC2_FULL_CONTEXT = {{full_name}}
@@ -54,9 +77,6 @@ module Spec2
         {% end %}
 
         __spec2_sanity_checks({{name}}, {{full_name}})
-
-        @@__spec2_active_context = ::Spec2::Context
-          .new(%current_context, {{what}})
 
         (%current_context ||
          ::Spec2::Context.instance)
@@ -98,7 +118,6 @@ module Spec2
 
         def initialize(@context)
           @what = {{what}}
-          @blk = -> {}
         end
 
         def run
@@ -144,19 +163,46 @@ module Spec2
       def __spec2_clear_lets
         super
         {% for what in LETS %}
-          @{{what.id}} = nil
+          __spec2_clear_specific_let({{what}})
         {% end %}
+      end
+    end
+
+    macro __spec2_clear_specific_let(name)
+      @_{{name.id}} = nil
+    end
+
+    module LetProtocol
+      abstract def unwrap
+    end
+
+    class Let(T)
+      include LetProtocol
+
+      @unwrap : T
+      getter unwrap
+
+      def initialize(&block : -> T)
+        @unwrap = block.call
       end
     end
 
     macro __spec2_def_let(name)
       {% blk = LETS[name] %}
 
+      @_{{name.id}} : LetProtocol?
+
       def {{name.id}}
-        @_{{name.id}} ||= {{name.id}}!
+        (@_{{name.id}} ||= {{name.id}}!).unwrap as typeof(__spec2_well_typed_let__{{name.id}})
       end
 
       def {{name.id}}!
+        Let.new do
+          __spec2_well_typed_let__{{name.id}}
+        end
+      end
+
+      def __spec2_well_typed_let__{{name.id}}
         {{blk.body}}
       end
     end

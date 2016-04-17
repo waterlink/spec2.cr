@@ -4,7 +4,3 @@ license: MIT
 
 authors:
 - Oleksii Fedorov <waterlink000@gmail.com>
-
-development_dependencies:
-  tooling:
-    github: waterlink/tooling.cr

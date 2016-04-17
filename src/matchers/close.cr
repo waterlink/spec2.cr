@@ -1,13 +1,15 @@
 module Spec2
   module Matchers
-    class Close
+    class Close(T, E)
       include Matcher
-      getter actual, expected, delta
-      getter! actual_delta
+      getter expected, delta
+      getter actual_representation : String?
+      getter! actual_delta : T|E?
 
-      def initialize(@expected, @delta); end
+      def initialize(@expected : T, @delta : E); end
 
-      def match(@actual)
+      def match(actual)
+        @actual_representation = actual.inspect
         @actual_delta = (actual - expected).abs
         actual_delta < delta
       end
@@ -15,7 +17,7 @@ module Spec2
       def failure_message
         "Expected to be close:
         Expected:  #{expected.inspect}
-        Actual:    #{actual.inspect}
+        Actual:    #{actual_representation}
         Max-delta: #{delta.inspect}
         Delta:     #{actual_delta.inspect}"
       end
@@ -23,7 +25,7 @@ module Spec2
       def failure_message_when_negated
         "Expected to be not close:
         Expected:  #{expected.inspect}
-        Actual:    #{actual.inspect}
+        Actual:    #{actual_representation}
         Min-delta: #{delta.inspect}
         Delta:     #{actual_delta.inspect}"
       end

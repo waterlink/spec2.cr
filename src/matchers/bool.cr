@@ -2,18 +2,19 @@ module Spec2
   module Matchers
     class BeTruthy
       include Matcher
-      getter actual
+      getter actual_representation : String?
 
-      def match(@actual)
+      def match(actual)
+        @actual_representation = actual.inspect
         !!actual
       end
 
       def failure_message
-        "Expected #{actual.inspect} to be truthy"
+        "Expected #{actual_representation} to be truthy"
       end
 
       def failure_message_when_negated
-        "Expeccted #{actual.inspect} not to be truthy"
+        "Expeccted #{actual_representation} not to be truthy"
       end
 
       def description
@@ -23,18 +24,19 @@ module Spec2
 
     class BeFalsey
       include Matcher
-      getter actual
+      getter actual_representation : String?
 
-      def match(@actual)
+      def match(actual)
+        @actual_representation = actual.inspect
         !actual
       end
 
       def failure_message
-        "Expected #{actual.inspect} to be falsey"
+        "Expected #{actual_representation} to be falsey"
       end
 
       def failure_message_when_negated
-        "Expeccted #{actual.inspect} not to be falsey"
+        "Expeccted #{actual_representation} not to be falsey"
       end
 
       def description

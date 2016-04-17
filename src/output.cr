@@ -1,5 +1,7 @@
 module Spec2
-   module Output
+  module Output
+    Factory.abstract
+    
     abstract def print(style, string)
 
     def print(string)
