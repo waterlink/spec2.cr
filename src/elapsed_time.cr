@@ -14,7 +14,11 @@ module Spec2
     @_total_seconds : Float64?
 
     private getter time_now, started_at
-    def initialize(@started_at = Spec2.started_at, @time_now = Time.now)
+    def initialize
+      initialize(Spec2.started_at, Time.now)
+    end
+
+    def initialize(@started_at, @time_now)
     end
 
     def to_s

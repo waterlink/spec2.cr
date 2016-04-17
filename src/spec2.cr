@@ -27,15 +27,18 @@ module Spec2
 
   @@high_runner = HighRunner.new(Context.instance)
 
-  @@started_at : Time
-  @@started_at = Time.now
+  @@started_at : Time?
 
   def high_runner
     @@high_runner
   end
 
+  def record_started_at
+    @@started_at = Time.now
+  end
+
   def started_at
-    @@started_at
+    @@started_at.not_nil!
   end
 
   def configure_high_runner(@@high_runner)
@@ -57,6 +60,8 @@ module Spec2
     ::Spec2::DSL.describe({{what}}, {{file}}, {{line}}) {{block}}
   end
 end
+
+Spec2.record_started_at
 
 Spec2.configure_runner(Spec2::Runners::Default)
 Spec2.configure_reporter(Spec2::Reporters::Default)
