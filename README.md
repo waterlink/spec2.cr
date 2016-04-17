@@ -123,7 +123,8 @@ To configure your own custom order you can use:
 Spec2.configure_order(MyOrder)
 ```
 
-Class `MyOrder` should implement `Order` protocol ([see it here](src/order.cr)).
+Class `MyOrder` should implement `Order` protocol and `Order::Factory` class
+protocol ([see it here](src/order.cr)).
 See also [a random order implementation](src/orders/random.cr).
 
 ### No color mode
@@ -141,7 +142,8 @@ To configure your own custom output you can use:
 Spec2.configure_output(MyOutput)
 ```
 
-Class `MyOutput` should implement `Output` protocol ([see it here](src/output.cr)).
+Class `MyOutput` should implement `Output` protocol and `Output::Factory` class
+protocol ([see it here](src/output.cr)).
 See also [a default colorful output implementation](src/outputs/default.cr).
 
 ### Documentation reporter
@@ -159,7 +161,8 @@ To configure your own custom reporter you can use:
 Spec2.configure_reporter(MyReporter)
 ```
 
-Class `MyReporter` should implement `Reporter` protocol ([see it here](src/reporter.cr)).
+Class `MyReporter` should implement `Reporter` protocol and `Reporter::Factory`
+class protocol ([see it here](src/reporter.cr)).
 See also [a default reporter implementation](src/reporters/default.cr).
 
 If you are creating a custom reporter, you might want to use `ElapsedTime`
@@ -175,7 +178,8 @@ output.puts "Finished in #{::Spec2::ElapsedTime.new.to_s}"
 Spec2.configure_runner(MyRunner)
 ```
 
-Class `MyRunner` should implement `Runner` protocol ([see it here](src/runner.cr)).
+Class `MyRunner` should implement `Runner` protocol and `Runner::Factory` class
+protocol ([see it here](src/runner.cr)).
 See also [a default runner implementation](src/runners/default.cr).
 
 ### `before`
@@ -288,26 +292,30 @@ end
 First, define your matcher implementing [this protocol](src/matcher.cr):
 
 ```crystal
-class MyMatcher
+class MyMatcher(T, E)
   include Spec2::Matcher
 
-  def initialize(@expected, @stuff)
+  @actual_inspect : String?
+
+  def initialize(@expected : T, @stuff : E)
   end
 
-  def match(@actual)
+  def match(actual)
+    @actual_inspect = actual.inspect
+
     # return true or false here
   end
 
   def failure_message
     "Expected to be valid #{@stuff.inspect}.
     Expected: #{@expected.inspect}.
-    Actual:   #{@actual.inspect}."
+    Actual:   #{@actual_inspect}."
   end
 
   def failure_message_when_negated
     "Expected to be invalid #{@stuff.inspect}.
     Expected: #{@expected.inspect}.
-    Actual:   #{@actual.inspect}."
+    Actual:   #{@actual_inspect}."
   end
 
   def description
@@ -339,7 +347,8 @@ end
 After you forked the repo:
 
 - run `crystal deps` to install dependencies
-- run `crystal spec` to see if tests are green
+- run `crystal spec` and `crystal unit` to see if tests are green
+  (or just run `scripts/test` to run them both)
 - apply TDD to implement your feature/fix/etc
 
 ## Contributing
