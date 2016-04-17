@@ -180,16 +180,16 @@ module Spec2
       @_{{name.id}} : LetProtocol?
 
       def {{name.id}}
-        (@_{{name.id}} ||= {{name.id}}!).unwrap as typeof(__spec2_for_typeof_{{name.id}})
+        (@_{{name.id}} ||= {{name.id}}!).unwrap as typeof(__spec2_well_typed_let__{{name.id}})
       end
 
       def {{name.id}}!
         Let.new do
-          {{blk.body}}
+          __spec2_well_typed_let__{{name.id}}
         end
       end
 
-      def __spec2_for_typeof_{{name.id}}
+      def __spec2_well_typed_let__{{name.id}}
         {{blk.body}}
       end
     end
