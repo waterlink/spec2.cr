@@ -1,6 +1,6 @@
 module Spec2
   class ExpectationNotMet < Exception
-    getter example
+    getter example : Example?
 
     def with_example(@example)
       self

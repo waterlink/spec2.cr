@@ -1,7 +1,12 @@
 module Spec2
   class Example
+    @_description : String?
+
+    @context : Context
+    @what : String
+
     getter context, what
-    def initialize(@context, @what, &@blk : ->)
+    def initialize(@context, @what)
     end
 
     def description
@@ -9,7 +14,6 @@ module Spec2
     end
 
     def run
-      @blk.call
     end
 
     def __spec2_clear_lets

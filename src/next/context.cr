@@ -1,6 +1,5 @@
 module Spec2
   class Context
-    CURRENT = {"get" => ::Spec2::Context::Inside}
     DEFINED = {} of String => Bool
 
     def self.instance
@@ -38,13 +37,6 @@ module Spec2
 
     def __clear
       @_contexts = nil
-    end
-
-    module Inside
-      include DSL
-
-      @@__spec2_active_context : Context
-      @@__spec2_active_context = Context.instance
     end
   end
 end

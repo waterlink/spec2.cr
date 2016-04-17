@@ -24,12 +24,19 @@ module Spec2
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
       {% if SPEC2_FULL_CONTEXT == ":root" %}
+        module Spec2___Root
+        @@__spec2_active_context : ::Spec2::Context
+        @@__spec2_active_context = ::Spec2::Context.instance
         ::Spec2::DSL.context(
       {% else %}
         context(
       {% end %}
         {{what}}, {{file}}, {{line}}
       ) {{blk}}
+
+      {% if SPEC2_FULL_CONTEXT == ":root" %}
+        {{:end.id}}
+      {% end %}
     end
 
     macro context(what, file = __FILE__, line = __LINE__, &blk)
@@ -98,7 +105,6 @@ module Spec2
 
         def initialize(@context)
           @what = {{what}}
-          @blk = -> {}
         end
 
         def run
