@@ -48,6 +48,7 @@ dependencies:
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
 - [ ] Shared examples and example groups.
+- [ ] `described_class`.
 
 ## Usage
 
