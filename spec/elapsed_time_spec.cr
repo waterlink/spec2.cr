@@ -10,22 +10,22 @@ module Spec2
         it "returns in milliseconds" do
           expect(ElapsedTime.new(
             started_at, started_at + 1.milliseconds,
-          ).to_s).to eq("1 milliseconds")
+          ).to_s).to eq("1.0 milliseconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 50.milliseconds,
-          ).to_s).to eq("50 milliseconds")
+          ).to_s).to eq("50.0 milliseconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 999.milliseconds,
-          ).to_s).to eq("999 milliseconds")
+          ).to_s).to eq("999.0 milliseconds")
         end
 
         it "returns in milliseconds rounded to .2" do
           expect(ElapsedTime.new(
             started_at,
             started_at + Time::Span.new(36 * 10000)
-          ).to_s).to eq("36 milliseconds")
+          ).to_s).to eq("36.0 milliseconds")
 
           expect(ElapsedTime.new(
             started_at,
@@ -48,15 +48,15 @@ module Spec2
         it "returns in seconds" do
           expect(ElapsedTime.new(
             started_at, started_at + 1.seconds,
-          ).to_s).to eq("1 seconds")
+          ).to_s).to eq("1.0 seconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 34.seconds,
-          ).to_s).to eq("34 seconds")
+          ).to_s).to eq("34.0 seconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 59.seconds,
-          ).to_s).to eq("59 seconds")
+          ).to_s).to eq("59.0 seconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 60.seconds,
@@ -66,7 +66,7 @@ module Spec2
         it "returns in seconds rounded to .2" do
           expect(ElapsedTime.new(
             started_at, started_at + 7.seconds,
-          ).to_s).to eq("7 seconds")
+          ).to_s).to eq("7.0 seconds")
 
           expect(ElapsedTime.new(
             started_at, started_at + 7.3.seconds,

@@ -48,13 +48,13 @@ module Spec2
     configure_order(Orders::Random)
   end
 
-  delegate configure_reporter, high_runner
-  delegate configure_runner, high_runner
-  delegate configure_order, high_runner
-  delegate configure_output, high_runner
-  delegate current_context, high_runner
-  delegate exit_code, high_runner
-  delegate run, high_runner
+  delegate configure_reporter, to: high_runner
+  delegate configure_runner, to: high_runner
+  delegate configure_order, to: high_runner
+  delegate configure_output, to: high_runner
+  delegate current_context, to: high_runner
+  delegate exit_code, to: high_runner
+  delegate run, to: high_runner
 
   macro describe(what, file = __FILE__, line = __LINE__, &block)
     ::Spec2::DSL.describe({{what}}, {{file}}, {{line}}) {{block}}

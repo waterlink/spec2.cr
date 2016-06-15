@@ -69,6 +69,6 @@ module Spec2
       want_exit(1) if current_runner.failed?
     end
 
-    delegate current_context, current_runner
+    delegate current_context, to: current_runner
   end
 end
