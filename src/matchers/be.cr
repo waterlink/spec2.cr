@@ -34,22 +34,23 @@ module Spec2
       def initialize(@actual : T, @expectation : ExpectationProtocol)
       end
 
-      macro method_missing(name, args, block)
-        ok = !!(@actual.{{name.id}}({{args.argify}}) {{block}})
+      #macro method_missing(name, args, block)
+      macro method_missing(call)
+        ok = !!(@actual.{{call.name.id}}({{call.args.argify}}) {{call.block}})
 
-        {% if args.size == 0 %}
-             failure = "Expected #{@actual.inspect} to be {{name.id}}"
-             negated = "Expected #{@actual.inspect} not to be {{name.id}}"
+        {% if call.args.size == 0 %}
+             failure = "Expected #{@actual.inspect} to be {{call.name.id}}"
+             negated = "Expected #{@actual.inspect} not to be {{call.name.id}}"
         {% end %}
 
-        {% if args.size == 1 %}
-             failure = "Expected #{@actual.inspect} to be {{name.id}} #{{{args.first.id}}}"
-             negated = "Expected #{@actual.inspect} not to be {{name.id}} #{{{args.first.id}}}"
+        {% if call.args.size == 1 %}
+             failure = "Expected #{@actual.inspect} to be {{call.name.id}} #{{{call.args.first.id}}}"
+             negated = "Expected #{@actual.inspect} not to be {{call.name.id}} #{{{call.args.first.id}}}"
         {% end %}
 
-        {% if args.size > 1 %}
-             failure = "Expected #{@actual.inspect} to be {{name.id}} #{ { {{args.argify}} } }"
-             negated = "Expected #{@actual.inspect} not to be {{name.id}} #{ { {{args.argify}} } }"
+        {% if call.args.size > 1 %}
+             failure = "Expected #{@actual.inspect} to be {{call.name.id}} #{ { {{call.args.argify}} } }"
+             negated = "Expected #{@actual.inspect} not to be {{call.name.id}} #{ { {{call.args.argify}} } }"
         {% end %}
 
         @expectation.callback(ok, failure, negated)

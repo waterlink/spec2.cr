@@ -339,7 +339,7 @@ Spec2.describe Spec2::Matchers do
           expect(42.05).to be_close(42, 0.01)
         }.to raise_error(
           Spec2::ExpectationNotMet,
-          "Expected to be close:\n        Expected:  42\n        Actual:    42.05\n        Max-delta: 0.01\n        Delta:     0.05"
+          "Expected to be close:\n        Expected:  42\n        Actual:    42.05\n        Max-delta: 0.01\n        Delta:     0.049999999999997158"
         )
       end
     end
