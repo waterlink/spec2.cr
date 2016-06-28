@@ -379,14 +379,14 @@ Spec2.describe Spec2::Matchers do
     describe ".even?" do
       context "when is even" do
         it "passes" do
-          expect(42).to_be .even?
+          expect(42).to_be.even?
         end
       end
 
       context "when is not even" do
         it "fails" do
           expect {
-            expect(45).to_be .even?
+            expect(45).to_be.even?
           }.to raise_error(
             Spec2::ExpectationNotMet,
             "Expected 45 to be even?",
@@ -399,14 +399,14 @@ Spec2.describe Spec2::Matchers do
       describe ".correct?(word, name, greeting)" do
         context "when is correct" do
           it "passes" do
-            expect(Greeting.new).to_be .correct?("hello", "world", "hello, world!")
+            expect(Greeting.new).to_be.correct?("hello", "world", "hello, world!")
           end
         end
 
         context "when is not correct" do
           it "fails" do
             expect {
-              expect(Greeting.new).to_be .correct?("hello", "john", "hello, world!")
+              expect(Greeting.new).to_be.correct?("hello", "john", "hello, world!")
             }.to raise_error(
               Spec2::ExpectationNotMet,
               match(/Expected #<Greeting:.+> to be correct\? {"hello", "john", "hello, world!"}/),
@@ -447,7 +447,7 @@ Spec2.describe Spec2::Matchers do
       context "when is even" do
         it "fails" do
           expect {
-            expect(42).not_to_be .even?
+            expect(42).not_to_be.even?
           }.to raise_error(
             Spec2::ExpectationNotMet,
             "Expected 42 not to be even?",
@@ -457,7 +457,7 @@ Spec2.describe Spec2::Matchers do
 
       context "when is not even" do
         it "passes" do
-          expect(45).not_to_be .even?
+          expect(45).not_to_be.even?
         end
       end
     end
@@ -467,7 +467,7 @@ Spec2.describe Spec2::Matchers do
         context "when is correct" do
           it "fails" do
             expect {
-              expect(Greeting.new).not_to_be .correct?("hello", "world", "hello, world!")
+              expect(Greeting.new).not_to_be.correct?("hello", "world", "hello, world!")
             }.to raise_error(
               Spec2::ExpectationNotMet,
               match(/Expected #<Greeting:.+> not to be correct\? {"hello", "world", "hello, world!"}/),
@@ -477,7 +477,7 @@ Spec2.describe Spec2::Matchers do
 
         context "when is not correct" do
           it "passes" do
-            expect(Greeting.new).not_to_be .correct?("hello", "john", "hello, world!")
+            expect(Greeting.new).not_to_be.correct?("hello", "john", "hello, world!")
           end
         end
       end
@@ -500,6 +500,36 @@ Spec2.describe Spec2::Matchers do
         }.to raise_error(
           Spec2::ExpectationNotMet,
           "Expected 42 to be a String",
+        )
+      end
+    end
+  end
+
+  class DescribedClass
+    @foo = "bar"
+
+    def foo
+      @foo
+    end
+  end
+
+  describe DescribedClass do
+    context "when describe uses a class" do
+      it "has the described_class attribute" do
+        expect(described_class).to eq(DescribedClass)
+        expect(described_class.new.foo).to eq("bar")
+      end
+    end
+  end
+
+  describe (2 + 2) do
+    context "when describe uses literal expression" do
+      it "fails" do
+        expect {
+          expect(described_class).to eq(4)
+        }.to raise_error(
+          Exception,
+          "2 + 2 is expected to be a Class, not Int32"
         )
       end
     end
