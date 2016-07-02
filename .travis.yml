@@ -1,3 +1,4 @@
 language: crystal
+dist: trusty
 
 script: ./scripts/test
