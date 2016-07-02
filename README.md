@@ -28,7 +28,7 @@ Add it to `shard.yml`
 dependencies:
   spec2:
     github: waterlink/spec2.cr
-    version: ~> 0.8
+    version: ~> 0.9
 ```
 
 ## Goals
@@ -43,12 +43,11 @@ dependencies:
 
 ## Roadmap
 
-### `0.9`
+### `0.10`
 
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
 - [ ] Shared examples and example groups.
-- [ ] `described_class`.
 
 ## Usage
 
@@ -225,6 +224,19 @@ let!(answer) { 42 }
 
 it "is correct answer" do
   expect(answer).to eq(42)
+end
+```
+
+### `described_class`
+
+For `describe ...` blocks, that describe a class, there is a shortcut to reference that class:
+
+```crystal
+describe Example do
+  it "can be created" do
+    expect(described_class.new.greet).to eq("hello world")
+    # instead of `Example.new.greet`.
+  end
 end
 ```
 
