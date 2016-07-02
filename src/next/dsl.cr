@@ -76,6 +76,15 @@ module Spec2
           {% ::Spec2::Context::DEFINED[full_name] = true %}
         {% end %}
 
+        {% unless what.is_a?(StringLiteral) %}
+          def described_class
+            unless ({{what.id}}).is_a?(Class)
+              raise "#{ {{what.id.stringify}} } is expected to be a Class, not #{typeof({{what.id}}) }"
+            end
+            {{what.id}}
+          end
+        {% end %}
+
         __spec2_sanity_checks({{name}}, {{full_name}})
 
         (%current_context ||
