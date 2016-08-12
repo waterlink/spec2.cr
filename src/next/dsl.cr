@@ -202,7 +202,7 @@ module Spec2
       @_{{name.id}} : LetProtocol?
 
       def {{name.id}}
-        (@_{{name.id}} ||= {{name.id}}!).unwrap as typeof(__spec2_well_typed_let__{{name.id}})
+        (@_{{name.id}} ||= {{name.id}}!).unwrap.as(typeof(__spec2_well_typed_let__{{name.id}}))
       end
 
       def {{name.id}}!
