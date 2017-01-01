@@ -36,7 +36,7 @@ module Spec2
 
       #macro method_missing(name, args, block)
       macro method_missing(call)
-        ok = !!(@actual.{{call.name.id}}({{call.args.argify}}) {{call.block}})
+        ok = !!(@actual.{{call.name.id}}({{call.args.splat}}) {{call.block}})
 
         {% if call.args.size == 0 %}
              failure = "Expected #{@actual.inspect} to be {{call.name.id}}"
@@ -49,8 +49,8 @@ module Spec2
         {% end %}
 
         {% if call.args.size > 1 %}
-             failure = "Expected #{@actual.inspect} to be {{call.name.id}} #{ { {{call.args.argify}} } }"
-             negated = "Expected #{@actual.inspect} not to be {{call.name.id}} #{ { {{call.args.argify}} } }"
+             failure = "Expected #{@actual.inspect} to be {{call.name.id}} #{ { {{call.args.splat}} } }"
+             negated = "Expected #{@actual.inspect} not to be {{call.name.id}} #{ { {{call.args.splat}} } }"
         {% end %}
 
         @expectation.callback(ok, failure, negated)

@@ -8,7 +8,7 @@ module Spec2
 
   macro register_matcher(name, &block)
     module ::Spec2::Matchers
-      def {{name.id}}({{block.args.argify}})
+      def {{name.id}}({{block.args.splat}})
         {{block.body}}
       end
     end
