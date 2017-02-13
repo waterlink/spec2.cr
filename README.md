@@ -9,7 +9,7 @@ Spec2.describe Greeting do
   subject { Greeting.new }
 
   describe "#greet" do
-    context "when name is world"
+    context "when name is world" do
       let(name) { "world" }
 
       it "greets the world" do
