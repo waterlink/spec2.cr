@@ -7,6 +7,7 @@ module Spec2
       COLORS = {
         success: :green,
         failure: :red,
+        pending: :yellow,
       }
 
       def self.build

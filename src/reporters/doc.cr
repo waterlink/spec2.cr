@@ -11,6 +11,7 @@ module Spec2
       getter! output, nesting
       def initialize
         @count = 0
+        @pending = 0
         @errors = [] of ExpectationNotMet
         @nesting = 0
       end
@@ -32,7 +33,12 @@ module Spec2
       end
 
       def example_succeeded(example)
-        output.puts :success, "#{indent}#{example.what}"
+        if example.pending?
+          @pending += 1
+          output.puts :pending, "#{indent}#{example.what}"
+        else
+          output.puts :success, "#{indent}#{example.what}"
+        end
       end
 
       def example_failed(example, exception)
@@ -59,7 +65,7 @@ module Spec2
         output.puts
         status = @errors.size > 0 ? :failure : :success
         output.puts "Finished in #{ElapsedTime.new.to_s}"
-        output.puts status, "Examples: #{@count}, failures: #{@errors.size}"
+        output.puts status, "Examples: #{@count}, failures: #{@errors.size}, pending: #{@pending}"
       end
 
       private def indent

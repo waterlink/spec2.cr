@@ -11,6 +11,7 @@ module Spec2
       getter! output
       def initialize
         @count = 0
+        @pending = 0
         @errors = [] of ExpectationNotMet
       end
 
@@ -28,7 +29,12 @@ module Spec2
       end
 
       def example_succeeded(example)
-        output.print :success, "."
+        if example.pending?
+          @pending += 1
+          output.print :pending, "*"
+        else
+          output.print :success, "."
+        end
       end
 
       def example_failed(example, exception)
@@ -55,7 +61,7 @@ module Spec2
         output.puts
         status = @errors.size > 0 ? :failure : :success
         output.puts "Finished in #{ElapsedTime.new.to_s}"
-        output.puts status, "Examples: #{@count}, failures: #{@errors.size}"
+        output.puts status, "Examples: #{@count}, failures: #{@errors.size}, pending: #{@pending}"
       end
     end
   end
