@@ -43,7 +43,7 @@ dependencies:
 
 ## Roadmap
 
-### `0.10`
+### `1.0`
 
 - [ ] Configuration through CLI interface.
 - [ ] Filters.
@@ -75,6 +75,20 @@ include Spec2::GlobalDSL
 # and then:
 describe Greeting do
   # ...
+end
+```
+
+### Writing examples
+
+```crystal
+Spec2.describe "some tests" do
+  it "is a test name here" do
+    # .. this is the example here ..
+  end
+
+  pending "is a pending test here" do
+    # .. this example will not be executed ..
+  end
 end
 ```
 

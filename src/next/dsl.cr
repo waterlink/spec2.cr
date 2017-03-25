@@ -73,6 +73,7 @@ module Spec2
           BEFORES = [] of Int32
           AFTERS = [] of Int32
           ITS = {} of String => Int32
+          PENDING_ITS = {} of String => Bool
           {% ::Spec2::Context::DEFINED[full_name] = true %}
         {% end %}
 
@@ -108,6 +109,12 @@ module Spec2
 
     macro it(what, &blk)
       {% ITS[what] = blk %}
+      {% PENDING_ITS[what] = false %}
+    end
+
+    macro pending(what, &blk)
+      {% ITS[what] = blk %}
+      {% PENDING_ITS[what] = true %}
     end
 
     macro __spec2_def_its
@@ -129,6 +136,7 @@ module Spec2
           @what = {{what}}
         end
 
+        {% if PENDING_ITS[what] == false %}
         def run
           __spec2_delayed = [] of ->
 
@@ -140,6 +148,18 @@ module Spec2
           __spec2_after_hook
           __spec2_delayed.not_nil!.each &.call
         end
+
+        def pending?
+          false
+        end
+        {% else %}
+        def run
+        end
+
+        def pending?
+          true
+        end
+        {% end %}
       end
 
       %current_context = (@@__spec2_active_context ||

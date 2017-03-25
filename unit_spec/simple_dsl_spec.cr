@@ -103,6 +103,35 @@ module SimpleDSLSpec
 
   Spec2::Context.__clear
   evt = empty_evt
+  Spec2::DSL.describe "something with pending" do
+    evt << :described_something
+
+    pending "pending functionality" do
+      H.evt << :it_is_pending
+    end
+  end
+
+  describe "pending statement" do
+    example = Spec2::Context.contexts[0].examples[0]
+
+    it "defines an example" do
+      example.what.should H.eq("pending functionality")
+
+      example.description.should H.eq("something with pending pending functionality")
+    end
+
+    it "does not execute block right away" do
+      evt.should H.eq([:described_something])
+    end
+
+    it "does not execute block when run" do
+      example.run
+      evt.should H.eq([:described_something])
+    end
+  end
+
+  Spec2::Context.__clear
+  evt = empty_evt
   Spec2::DSL.describe "something with let" do
     evt << :described_something
 

@@ -16,6 +16,10 @@ module Spec2
     def run
     end
 
+    def pending?
+      false
+    end
+
     def __spec2_clear_lets
     end
   end
