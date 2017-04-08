@@ -35,8 +35,17 @@ module Spec2
       @_examples ||= [] of Example
     end
 
+    def global_befores
+      @_global_befores ||= [] of Proc(Nil)
+    end
+
+    def add_global_before(&blk : Proc(Nil))
+      global_befores << blk
+    end
+
     def __clear
       @_contexts = nil
+      @_global_befores = [] of Proc(Nil)
     end
   end
 end

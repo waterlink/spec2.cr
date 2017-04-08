@@ -140,6 +140,7 @@ module Spec2
         def run
           __spec2_delayed = [] of ->
 
+          Spec2::Context.instance.global_befores.each &.call
           __spec2_before_hook
           __spec2_run_lets!
           {{blk.body}}
@@ -263,6 +264,10 @@ module Spec2
 
     macro after(&blk)
       {% AFTERS << blk %}
+    end
+
+    macro global_before(&blk)
+      Spec2::Context.instance.add_global_before {{blk}}
     end
 
     macro __spec2_def_hooks
