@@ -16,7 +16,7 @@ module Spec2
 
     def to(@matcher)
       return if matcher.match(actual)
-      raise ExpectationNotMet.new(matcher.failure_message)
+      ExpectationNotMet.new(matcher.failure_message)
     end
 
     def to_be
