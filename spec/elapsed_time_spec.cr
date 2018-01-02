@@ -3,7 +3,7 @@ require "../src/elapsed_time"
 
 module Spec2
   Spec2.describe ElapsedTime do
-    let(started_at) { Time.new(2014, 4, 21, 13, 27, 33, 57) }
+    let(started_at) { Time.new(2014, 4, 21, 13, 27, 33) + 57.milliseconds }
 
     describe "#to_s" do
       context "when seconds < 1" do
@@ -21,25 +21,33 @@ module Spec2
           ).to_s).to eq("999.0 milliseconds")
         end
 
+        def to_milliseconds(ms)
+          {% if Crystal::VERSION =~ /\A0\.(2[0-3]|[01][0-9])\./ %} # < 0.24
+            Time::Span.new(ms * 10_000)
+          {% else %}
+            ms.milliseconds
+          {% end %}
+        end
+
         it "returns in milliseconds rounded to .2" do
           expect(ElapsedTime.new(
             started_at,
-            started_at + Time::Span.new(36 * 10000)
+            started_at + to_milliseconds(36)
           ).to_s).to eq("36.0 milliseconds")
 
           expect(ElapsedTime.new(
             started_at,
-            started_at + Time::Span.new(36.5 * 10000)
+            started_at + to_milliseconds(36.5)
           ).to_s).to eq("36.5 milliseconds")
 
           expect(ElapsedTime.new(
             started_at,
-            started_at + Time::Span.new(36.57 * 10000)
+            started_at + to_milliseconds(36.57)
           ).to_s).to eq("36.57 milliseconds")
 
           expect(ElapsedTime.new(
             started_at,
-            started_at + Time::Span.new(36.573 * 10000)
+            started_at + to_milliseconds(36.573)
           ).to_s).to eq("36.57 milliseconds")
         end
       end

@@ -465,7 +465,7 @@ module SimpleDSLSpec
     example = ::Spec2::Context.contexts[0].examples[0]
 
     it "still gets executed" do
-      expect_raises do
+      expect_raises(Exception) do
         example.run
       end
 
