@@ -87,8 +87,6 @@ module Spec2
 
       {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{what.id} (#{file.id}:#{line.id})" %}
 
-      puts {{name}}
-
       %current_context = @@__spec2_active_context
       module {{name.id}}
         include {{SPEC2_CONTEXT}}
