@@ -7,6 +7,7 @@ module Spec2
       '!'  => "Exclamation",
       '#'  => "Hash",
       '+'  => "Plus",
+      '*'  => "Star",
       '='  => "Equal",
       '<'  => "LessThan",
       '>'  => "GreaterThan",
