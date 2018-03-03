@@ -5,32 +5,16 @@ module Spec2
 
     CHAR_REPLACERS = {
       '!'  => "Exclamation",
-      '@'  => "At",
       '#'  => "Hash",
-      '$'  => "Dollar",
-      '%'  => "Percent",
-      '^'  => "Caret",
-      '&'  => "Ampersand",
-      '*'  => "Star",
-      '('  => "OpenParen",
-      ')'  => "CloseParen",
       '+'  => "Plus",
       '='  => "Equal",
       '<'  => "LessThan",
       '>'  => "GreaterThan",
-      '/'  => "ForwardSlash",
-      '\\' => "BackSlash",
       '['  => "OpenSquare",
       ']'  => "CloseSquare",
-      '{'  => "OpenCurly",
-      '}'  => "CloseCurly",
-      '|'  => "Pipe",
-      '"'  => "DoubleQuote",
-      '\'' => "SingleQuote",
       ';'  => "SemiColon",
       '.'  => "Period",
-      '?'  => "QuestionMark",
-      '-'  => "_",
+      '?'  => "QuestionMark"
     }
 
     module HasActiveContext
@@ -82,7 +66,7 @@ module Spec2
     end
 
     macro context(what, file = __FILE__, line = __LINE__, &blk)
-      {% name = what.id.stringify.chars.map { |c| CHAR_REPLACERS[c] || c }.join("").gsub(/^\w/, "_") %}
+      {% name = what.id.stringify.chars.map { |c| CHAR_REPLACERS[c] || c }.join("").gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
 
       {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{what.id} (#{file.id}:#{line.id})" %}
