@@ -8,6 +8,8 @@ module Spec2
       '#'  => "Hash",
       '+'  => "Plus",
       '*'  => "Star",
+      '/'  => "ForwardSlash",
+      '%'  => "Modulo",
       '='  => "Equal",
       '<'  => "LessThan",
       '>'  => "GreaterThan",
