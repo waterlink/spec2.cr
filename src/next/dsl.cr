@@ -3,6 +3,23 @@ module Spec2
     include Matchers
     extend Matchers
 
+    CHAR_REPLACERS = {
+      '!'  => "Exclamation",
+      '#'  => "Hash",
+      '+'  => "Plus",
+      '*'  => "Star",
+      '/'  => "ForwardSlash",
+      '%'  => "Modulo",
+      '='  => "Equal",
+      '<'  => "LessThan",
+      '>'  => "GreaterThan",
+      '['  => "OpenSquare",
+      ']'  => "CloseSquare",
+      ';'  => "SemiColon",
+      '.'  => "Period",
+      '?'  => "QuestionMark"
+    }
+
     module HasActiveContext
       macro included
         @@__spec2_active_context : ::Spec2::Context
@@ -31,7 +48,7 @@ module Spec2
       end
     end
 
-    SPEC2_CONTEXT = ::Spec2::DSL::Spec2___
+    SPEC2_CONTEXT      = ::Spec2::DSL::Spec2___
     SPEC2_FULL_CONTEXT = ":root"
 
     macro describe(what, file = __FILE__, line = __LINE__, &blk)
@@ -52,7 +69,7 @@ module Spec2
     end
 
     macro context(what, file = __FILE__, line = __LINE__, &blk)
-      {% name = what.id.stringify.gsub(/[^\w]/, "_") %}
+      {% name = what.id.stringify.chars.map { |c| CHAR_REPLACERS[c] || c }.join("").gsub(/[^\w]/, "_") %}
       {% name = ("Spec2__" + name.camelcase).id %}
 
       {% full_name = "#{SPEC2_FULL_CONTEXT.id} -> #{what.id} (#{file.id}:#{line.id})" %}
